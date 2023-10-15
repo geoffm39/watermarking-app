@@ -3,8 +3,8 @@ from tkinter import ttk
 
 
 class EditTextWindow(Toplevel):
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
 
