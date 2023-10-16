@@ -35,7 +35,8 @@ class MainWindow:
         self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
         self.select_files_button.grid(column=0, row=0, padx=2)
 
-        self.clear_files_button = ttk.Button(mainframe, text='Clear Files')
+        self.clear_files_button = ttk.Button(mainframe, text='Clear Files',
+                                             command=self.thumbnail_canvas.remove_all_images)
         self.start_editing_button = ttk.Button(mainframe, text='Start Editing')
 
         self.canvas_frame.grid(column=0, row=1, columnspan=3, sticky=(N, W, E, S))

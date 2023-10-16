@@ -56,6 +56,11 @@ class ThumbnailCanvas(Canvas):
         self.update_thumbnails()
         self.focused_label = None
 
+    def remove_all_images(self):
+        self.images = []
+        self.thumbnails = []
+        self.update_thumbnails()
+
     def add_images(self, filepaths):
         for filepath in filepaths:
             image = Image.open(filepath)
