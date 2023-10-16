@@ -11,6 +11,7 @@ class MainWindow:
     def __init__(self, root: Tk):
         self.root = root
         self.root.title('Watermark App')
+        self.root.option_add('*tearOFF', FALSE)
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
 
@@ -19,7 +20,7 @@ class MainWindow:
 
         # image thumbnail frame
         self.canvas_frame = ttk.Frame(mainframe, borderwidth=5, relief='ridge')
-        self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame, width=1075, height=655)
+        self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame, root=self.root, width=1075, height=655)
         self.canvas_scrollbar = ttk.Scrollbar(self.canvas_frame,
                                               orient='vertical',
                                               command=self.thumbnail_canvas.yview)
