@@ -49,4 +49,3 @@ class MainWindow:
     def load_files(self):
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.thumbnail_canvas.add_images(files)
-        print(self.root.geometry())
