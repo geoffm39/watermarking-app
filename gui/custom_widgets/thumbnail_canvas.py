@@ -24,9 +24,10 @@ class ThumbnailCanvas(Canvas):
         self.update_thumbnails()
 
     def update_thumbnails(self):
+        for thumbnail_label in self.thumbnail_frame.winfo_children():
+            thumbnail_label.destroy()
         for i, image in enumerate(self.thumbnails):
-            thumbnail = ttk.Label(self.thumbnail_frame, image=image)
-            thumbnail.grid(row=i // 5, column=i % 5, padx=5, pady=5)
-
+            thumbnail_label = ttk.Label(self.thumbnail_frame, image=image)
+            thumbnail_label.grid(row=i // 5, column=i % 5, padx=5, pady=5)
         self.thumbnail_frame.update_idletasks()
         self.config(scrollregion=self.bbox('all'))

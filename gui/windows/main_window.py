@@ -17,9 +17,9 @@ class MainWindow:
         mainframe = ttk.Frame(self.root)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
-        # image thumbnail area
+        # image thumbnail frame
         self.canvas_frame = ttk.Frame(mainframe, borderwidth=5, relief='ridge')
-        self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame)
+        self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame, width=1075, height=655)
         self.canvas_scrollbar = ttk.Scrollbar(self.canvas_frame,
                                               orient='vertical',
                                               command=self.thumbnail_canvas.yview)
@@ -29,11 +29,10 @@ class MainWindow:
         self.canvas_frame.columnconfigure(0, weight=1)
         self.canvas_frame.rowconfigure(0, weight=1)
 
+        # centred button frame
         self.button_frame = ttk.Frame(mainframe)
         self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
-        self.select_folder_button = ttk.Button(self.button_frame, text='Select Folder')
         self.select_files_button.grid(column=0, row=0, padx=2)
-        self.select_folder_button.grid(column=1, row=0, padx=2)
 
         self.clear_files_button = ttk.Button(mainframe, text='Clear Files')
         self.start_editing_button = ttk.Button(mainframe, text='Start Editing')
@@ -50,3 +49,4 @@ class MainWindow:
     def load_files(self):
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.thumbnail_canvas.add_images(files)
+        print(self.root.geometry())
