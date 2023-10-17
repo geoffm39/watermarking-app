@@ -6,6 +6,8 @@ from gui.custom_widgets.thumbnail_canvas import ThumbnailCanvas
 from gui.windows.edit_text_window import EditTextWindow
 from gui.windows.edit_logo_window import EditLogoWindow
 
+# SHOULD I MAKE TWO MODES USING FUNCTIONS?? ONE THUMBNAIL MODE (for thumbs and preview) AND ONE EDITING MODE
+# for first editing, and individual editing in the preview mode
 
 class MainWindow:
     def __init__(self, root: Tk):
@@ -18,9 +20,17 @@ class MainWindow:
         mainframe = ttk.Frame(self.root)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
+        self.images = []
+        self.thumbnails = []
+
         # image thumbnail frame
         self.canvas_frame = ttk.Frame(mainframe, borderwidth=5, relief='ridge')
-        self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame, root=self.root, width=1075, height=655)
+        self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame,
+                                                root=self.root,
+                                                images=self.images,
+                                                thumbnails=self.thumbnails,
+                                                width=1075,
+                                                height=655)
         self.canvas_scrollbar = ttk.Scrollbar(self.canvas_frame,
                                               orient='vertical',
                                               command=self.thumbnail_canvas.yview)

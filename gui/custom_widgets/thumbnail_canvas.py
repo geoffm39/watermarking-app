@@ -4,15 +4,15 @@ from PIL import Image, ImageTk
 
 
 class ThumbnailCanvas(Canvas):
-    def __init__(self, parent, root, **kwargs):
+    def __init__(self, parent, root, images, thumbnails, **kwargs):
         super().__init__(parent, **kwargs)
 
         self.root = root
         self.thumbnail_frame = ttk.Frame(self)
         self.create_window(0, 0, anchor='nw', window=self.thumbnail_frame)
 
-        self.images = []
-        self.thumbnails = []
+        self.images = images
+        self.thumbnails = thumbnails
 
         self.thumbnail_menu = Menu(self.root, tearoff=0)
         self.thumbnail_menu.add_command(label='Rotate Right 90°', command=self.rotate_image_right)
