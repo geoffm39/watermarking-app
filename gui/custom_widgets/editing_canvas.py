@@ -12,22 +12,12 @@ class EditingCanvas(Canvas):
 
         self.images = images
         self.thumbnails = thumbnails
-        self.current_image_index = None
+        self.current_image_index = 0
         self.image_label = None
+        self.current_image = None
 
-        # SHOULD I CREATE ANOTHER LIST WITH EDITING IMAGES SETTING A LARGE THUMBNAIL TO KEEP SAME SIZE??
-        # if i do this how can i set the wanted position of the text and logo with dragging around???
-        # need to apply the text and logos to a percentage location and size relevent to thumbnail for each image
 
-        # THE SCROLLING WILL MOVE THESE! disable these buttons after picking first image to edit
-        # if these move around the screen as changing images, just remove them! (add buttons up top instead)
-        with Image.open('gui/images/next_arrow.png') as img:
-            self.next_button_img = ImageTk.PhotoImage(img)
-        with Image.open('gui/images/back_arrow.png') as img:
-            self.back_button_img = ImageTk.PhotoImage(img)
-        self.next_arrow_button = ttk.Button(self.editing_frame, image=self.next_button_img)
-        self.back_arrow_button = ttk.Button(self.editing_frame, image=self.back_button_img)
-
+    # SOMETIMES THE ARROW BUTTONS ARE NOT RESPONSIVE!! FIX THIS
     def set_image_index(self, image_index):
         self.current_image_index = image_index
         self.show_current_image()
@@ -46,7 +36,13 @@ class EditingCanvas(Canvas):
 
     def show_current_image(self):
         if self.image_label:
+            self.image_label.image = None
             self.image_label.destroy()
-        tk_version = ImageTk.PhotoImage(self.images[self.current_image_index])
-        self.image_label = ttk.Label(self.editing_frame, image=tk_version)
-        self.image_label.grid()
+        self.current_image = self.images[self.current_image_index]
+        thumb_img = self.current_image.copy()
+        thumb_img.thumbnail((1080, 655))
+        self.current_image = ImageTk.PhotoImage(thumb_img)
+        self.image_label = ttk.Label(self.editing_frame, image=self.current_image)
+        self.image_label.grid(column=0, row=0, sticky=(N, W, E, S))
+
+        self.editing_frame.update_idletasks()
