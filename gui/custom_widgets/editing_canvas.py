@@ -12,9 +12,18 @@ class EditingCanvas(Canvas):
 
         self.images = images
         self.thumbnails = thumbnails
+        self.resized_images = []
         self.current_image_index = 0
         self.image_label = None
         self.current_image = None
+
+    def update_resized_images(self):
+        self.resized_images = []
+        for image in self.images:
+            thumb_img = image.copy()
+            thumb_img.thumbnail((1080, 655))
+            thumb_img = ImageTk.PhotoImage(thumb_img)
+            self.resized_images.append(thumb_img)
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
@@ -36,11 +45,7 @@ class EditingCanvas(Canvas):
         if self.image_label:
             self.image_label.image = None
             self.image_label.destroy()
-        self.current_image = self.images[self.current_image_index]
-        thumb_img = self.current_image.copy()
-        thumb_img.thumbnail((1080, 655))
-        self.current_image = ImageTk.PhotoImage(thumb_img)
-        self.image_label = ttk.Label(self.editing_frame, image=self.current_image)
+        self.image_label = ttk.Label(self.editing_frame, image=self.resized_images[self.current_image_index])
         self.image_label.grid(column=0, row=0, sticky=(N, W, E, S))
 
         self.editing_frame.update_idletasks()

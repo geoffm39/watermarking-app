@@ -117,5 +117,6 @@ class MainWindow:
         self.add_watermarks_button.grid(column=2, row=0, sticky=E, padx=5)
         self.back_to_thumbs_button.grid(column=0, row=0, sticky=W, padx=5)
 
+        self.editing_canvas.update_resized_images()
         self.editing_canvas.show_current_image()
 
