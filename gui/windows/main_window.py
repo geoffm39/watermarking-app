@@ -68,6 +68,11 @@ class MainWindow:
         self.back_arrow_button = ttk.Button(self.button_frame,
                                             image=self.back_button_img,
                                             command=self.editing_canvas.previous_image_index)
+        self.add_text_button = ttk.Button(self.button_frame, text='Add Text')
+        self.add_logo_button = ttk.Button(self.button_frame, text='Add Logo')
+        self.remove_button = ttk.Button(self.button_frame, text='Remove')
+        self.add_watermarks_button = ttk.Button(mainframe, text='Apply Watermarks')
+        self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
 
         self.thumbnail_view()
 
@@ -77,8 +82,13 @@ class MainWindow:
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()
-        self.next_arrow_button.grid_forget()
         self.back_arrow_button.grid_forget()
+        self.add_text_button.grid_forget()
+        self.add_logo_button.grid_forget()
+        self.remove_button.grid_forget()
+        self.next_arrow_button.grid_forget()
+        self.add_watermarks_button.grid_forget()
+        self.back_to_thumbs_button.grid_forget()
 
         self.select_files_button.grid(column=0, row=0, padx=2)
         self.clear_files_button.grid(column=0, row=0, sticky=W, padx=5)
@@ -99,8 +109,13 @@ class MainWindow:
         self.thumbnail_canvas.grid_forget()
 
         self.editing_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
-        self.next_arrow_button.grid(column=1, row=0, padx=2)
         self.back_arrow_button.grid(column=0, row=0, padx=2)
+        self.add_text_button.grid(column=1, row=0, padx=2)
+        self.add_logo_button.grid(column=2, row=0, padx=2)
+        self.remove_button.grid(column=3, row=0, padx=2)
+        self.next_arrow_button.grid(column=4, row=0, padx=2)
+        self.add_watermarks_button.grid(column=2, row=0, sticky=E, padx=5)
+        self.back_to_thumbs_button.grid(column=0, row=0, sticky=W, padx=5)
 
         self.editing_canvas.show_current_image()
 

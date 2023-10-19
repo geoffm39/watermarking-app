@@ -16,8 +16,6 @@ class EditingCanvas(Canvas):
         self.image_label = None
         self.current_image = None
 
-
-    # SOMETIMES THE ARROW BUTTONS ARE NOT RESPONSIVE!! FIX THIS
     def set_image_index(self, image_index):
         self.current_image_index = image_index
         self.show_current_image()
