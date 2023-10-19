@@ -12,3 +12,4 @@ class EditTextWindow(Toplevel):
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+

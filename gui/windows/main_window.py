@@ -8,8 +8,6 @@ from gui.custom_widgets.thumbnail_canvas import ThumbnailCanvas
 from gui.windows.edit_text_window import EditTextWindow
 from gui.windows.edit_logo_window import EditLogoWindow
 
-# SHOULD I MAKE TWO MODES USING FUNCTIONS?? ONE THUMBNAIL MODE (for thumbs and preview) AND ONE EDITING MODE
-# for first editing, and individual editing in the preview mode
 
 class MainWindow:
     def __init__(self, root: Tk):
@@ -18,6 +16,9 @@ class MainWindow:
         self.root.option_add('*tearOFF', FALSE)
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
+
+        self.text_editor_window = None
+        self.logo_editor_window = None
 
         mainframe = ttk.Frame(self.root)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -68,8 +69,8 @@ class MainWindow:
         self.back_arrow_button = ttk.Button(self.button_frame,
                                             image=self.back_button_img,
                                             command=self.editing_canvas.previous_image_index)
-        self.add_text_button = ttk.Button(self.button_frame, text='Add Text')
-        self.add_logo_button = ttk.Button(self.button_frame, text='Add Logo')
+        self.add_text_button = ttk.Button(self.button_frame, text='Add Text', command=self.open_text_editor)
+        self.add_logo_button = ttk.Button(self.button_frame, text='Add Logo', command=self.open_logo_editor)
         self.remove_button = ttk.Button(self.button_frame, text='Remove')
         self.add_watermarks_button = ttk.Button(mainframe, text='Apply Watermarks')
         self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
@@ -79,6 +80,12 @@ class MainWindow:
     def load_files(self):
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.thumbnail_canvas.add_images(files)
+
+    def open_text_editor(self):
+        self.text_editor_window = EditTextWindow(self.root)
+
+    def open_logo_editor(self):
+        self.logo_editor_window = EditLogoWindow(self.root)
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()
