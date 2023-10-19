@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 
+from gui.custom_widgets.editing_canvas import EditingCanvas
 from gui.custom_widgets.thumbnail_canvas import ThumbnailCanvas
 from gui.windows.edit_text_window import EditTextWindow
 from gui.windows.edit_logo_window import EditLogoWindow
@@ -61,3 +62,7 @@ class MainWindow:
     def load_files(self):
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.thumbnail_canvas.add_images(files)
+
+    # def thumbnail_view(self):
+
+

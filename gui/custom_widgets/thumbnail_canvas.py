@@ -63,9 +63,9 @@ class ThumbnailCanvas(Canvas):
 
     def add_images(self, filepaths):
         for filepath in filepaths:
-            image = Image.open(filepath)
-            self.images.append(image)
-            thumb_img = image.copy()
+            with Image.open(filepath) as image:
+                self.images.append(image)
+                thumb_img = image.copy()
             thumb_img.thumbnail((200, 200))
             thumb_img = ImageTk.PhotoImage(thumb_img)
             self.thumbnails.append(thumb_img)
