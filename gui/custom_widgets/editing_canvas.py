@@ -11,6 +11,7 @@ class EditingCanvas(Canvas):
         self.thumbnails = thumbnails
         self.current_image_index = image_index
         self.current_image = current_image
+        self.current_photo_image = None
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
@@ -33,7 +34,7 @@ class EditingCanvas(Canvas):
         self.current_image = self.images[self.current_image_index]
         thumb_img = self.current_image.copy()
         thumb_img.thumbnail((1080, 654))
-        self.current_image = ImageTk.PhotoImage(thumb_img)
-        self.create_image(540, 327, image=self.current_image)
+        self.current_photo_image = ImageTk.PhotoImage(thumb_img)
+        self.create_image(540, 327, image=self.current_photo_image)
 
         self.update_idletasks()

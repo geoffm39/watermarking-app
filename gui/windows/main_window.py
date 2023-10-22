@@ -86,7 +86,9 @@ class MainWindow:
         self.thumbnail_canvas.add_images(files)
 
     def open_text_editor(self):
-        self.text_editor_window = EditTextWindow(self.root)
+        self.text_editor_window = EditTextWindow(self.root,
+                                                 current_image=self.current_image,
+                                                 editing_canvas=self.editing_canvas)
 
     def open_logo_editor(self):
         self.logo_editor_window = EditLogoWindow(self.root)

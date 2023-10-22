@@ -1,13 +1,17 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import colorchooser
+from PIL import Image, ImageDraw, ImageFont
 
 
 class EditTextWindow(Toplevel):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, current_image, editing_canvas, **kwargs):
         super().__init__(parent, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
+
+        self.current_image = current_image
+        self.editing_canvas = editing_canvas
 
         mainframe = ttk.Frame(self)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -75,6 +79,16 @@ class EditTextWindow(Toplevel):
         self.color_button.grid(column=0, row=6)
         self.tiled_checkbutton.grid(column=0, row=7)
         self.tiled_spacing_scale.grid(column=0, row=8)
+
+        # TESTING BUTTON
+        self.test_button = ttk.Button(mainframe, text='test', command=self.test)
+        self.test_button.grid(column=0, row=9)
+
+    def test(self):
+        # i need to create the image the same size as the original image
+        # then create a thumbnail of that image after adding the text
+        # then add that image to the canvas
+        txt = Image.new('RGBA', self.current_image.size)
 
     def select_font(self):
         pass
