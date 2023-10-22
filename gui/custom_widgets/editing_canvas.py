@@ -4,17 +4,13 @@ from PIL import Image, ImageTk
 
 
 class EditingCanvas(Canvas):
-    def __init__(self, parent, images, thumbnails, image_index, current_image, current_img_label,  **kwargs):
+    def __init__(self, parent, images, thumbnails, image_index, current_image,  **kwargs):
         super().__init__(parent, **kwargs)
-
-        self.editing_frame = ttk.Frame(self)
-        self.create_window(0, 0, anchor='nw', window=self.editing_frame)
 
         self.images = images
         self.thumbnails = thumbnails
         self.current_image_index = image_index
         self.current_image = current_image
-        self.image_label = current_img_label
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
@@ -33,14 +29,11 @@ class EditingCanvas(Canvas):
         self.show_current_image()
 
     def show_current_image(self):
-        if self.image_label:
-            self.image_label.image = None
-            self.image_label.destroy()
+        self.delete('all')
         self.current_image = self.images[self.current_image_index]
         thumb_img = self.current_image.copy()
-        thumb_img.thumbnail((1080, 655))
+        thumb_img.thumbnail((1080, 654))
         self.current_image = ImageTk.PhotoImage(thumb_img)
-        self.image_label = ttk.Label(self.editing_frame, image=self.current_image)
-        self.image_label.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.create_image(540, 327, image=self.current_image)
 
-        self.editing_frame.update_idletasks()
+        self.update_idletasks()

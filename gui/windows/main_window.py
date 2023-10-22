@@ -29,7 +29,6 @@ class MainWindow:
         self.images = []
         self.thumbnails = []
         self.current_image_index = 0
-        self.image_label = None
         self.current_image = None
 
         self.canvas_frame = ttk.Frame(mainframe, borderwidth=5, relief='ridge')
@@ -46,7 +45,7 @@ class MainWindow:
                                                 images=self.images,
                                                 thumbnails=self.thumbnails,
                                                 width=1080,
-                                                height=655)
+                                                height=654)
         self.canvas_scrollbar = ttk.Scrollbar(self.canvas_frame,
                                               orient='vertical',
                                               command=self.thumbnail_canvas.yview)
@@ -62,9 +61,8 @@ class MainWindow:
                                             thumbnails=self.thumbnails,
                                             image_index=self.current_image_index,
                                             current_image=self.current_image,
-                                            current_img_label=self.image_label,
                                             width=1080,
-                                            height=655)
+                                            height=654)
         with Image.open('gui/images/next_arrow.png') as img:
             self.next_button_img = ImageTk.PhotoImage(img)
         with Image.open('gui/images/back_arrow.png') as img:
