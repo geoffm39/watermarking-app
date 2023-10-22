@@ -28,6 +28,9 @@ class MainWindow:
 
         self.images = []
         self.thumbnails = []
+        self.current_image_index = 0
+        self.image_label = None
+        self.current_image = None
 
         self.canvas_frame = ttk.Frame(mainframe, borderwidth=5, relief='ridge')
         self.canvas_frame.columnconfigure(0, weight=1)
@@ -57,6 +60,9 @@ class MainWindow:
         self.editing_canvas = EditingCanvas(self.canvas_frame,
                                             images=self.images,
                                             thumbnails=self.thumbnails,
+                                            image_index=self.current_image_index,
+                                            current_image=self.current_image,
+                                            current_img_label=self.image_label,
                                             width=1080,
                                             height=655)
         with Image.open('gui/images/next_arrow.png') as img:

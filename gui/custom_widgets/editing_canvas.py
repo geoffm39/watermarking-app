@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 
 
 class EditingCanvas(Canvas):
-    def __init__(self, parent, images, thumbnails,  **kwargs):
+    def __init__(self, parent, images, thumbnails, image_index, current_image, current_img_label,  **kwargs):
         super().__init__(parent, **kwargs)
 
         self.editing_frame = ttk.Frame(self)
@@ -12,9 +12,9 @@ class EditingCanvas(Canvas):
 
         self.images = images
         self.thumbnails = thumbnails
-        self.current_image_index = 0
-        self.image_label = None
-        self.current_image = None
+        self.current_image_index = image_index
+        self.current_image = current_image
+        self.image_label = current_img_label
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
