@@ -57,6 +57,7 @@ class MainWindow:
 
         # editing view widgets
         self.editing_canvas = EditingCanvas(self.canvas_frame,
+                                            main_window=self,
                                             images=self.images,
                                             thumbnails=self.thumbnails,
                                             image_index=self.current_image_index,
@@ -87,6 +88,7 @@ class MainWindow:
 
     def open_text_editor(self):
         self.text_editor_window = EditTextWindow(self.root,
+                                                 parent=self,
                                                  current_image=self.current_image,
                                                  editing_canvas=self.editing_canvas)
 

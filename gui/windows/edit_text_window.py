@@ -1,17 +1,19 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import colorchooser
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 
 class EditTextWindow(Toplevel):
-    def __init__(self, parent, current_image, editing_canvas, **kwargs):
-        super().__init__(parent, **kwargs)
+    def __init__(self, root, parent, current_image, editing_canvas, **kwargs):
+        super().__init__(root, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
+        self.parent = parent
 
         self.current_image = current_image
         self.editing_canvas = editing_canvas
+        self.text_photo_image = None
 
         mainframe = ttk.Frame(self)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -85,10 +87,25 @@ class EditTextWindow(Toplevel):
         self.test_button.grid(column=0, row=9)
 
     def test(self):
-        # i need to create the image the same size as the original image
         # then create a thumbnail of that image after adding the text
         # then add that image to the canvas
-        txt = Image.new('RGBA', self.current_image.size)
+        text_image = Image.new('RGBA', self.parent.current_image.size, (255, 255, 255, 0))
+        fnt = ImageFont.truetype("fonts/aspire.ttf", 40)
+        d = ImageDraw.Draw(text_image)
+        d.text((10, 10), "Hello", font=fnt, fill=(255, 255, 255, 128))
+        # draw text, full opacity
+        d.text((10, 60), "World", font=fnt, fill=(255, 255, 255, 255))
+        self.text_photo_image = text_image.copy()
+        self.text_photo_image.thumbnail((1080, 654))
+        self.text_photo_image = ImageTk.PhotoImage(self.text_photo_image)
+        self.editing_canvas.watermark = self.editing_canvas.create_image(540, 327, image=self.text_photo_image)
+
+        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonPress-1>", self.editing_canvas.on_image_press)
+        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonRelease-1>", self.editing_canvas.on_image_release)
+        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<B1-Motion>", self.editing_canvas.on_image_drag)
+        self.editing_canvas.update_idletasks()
+
+    # CREATE A NEW CLASS THAT HOLDS ALL THE IMAGE DATA AND CONTROL!!!!!
 
     def select_font(self):
         pass

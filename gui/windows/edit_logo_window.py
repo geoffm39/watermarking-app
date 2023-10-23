@@ -3,8 +3,8 @@ from tkinter import ttk
 
 
 class EditLogoWindow(Toplevel):
-    def __init__(self, parent, **kwargs):
-        super().__init__(parent, **kwargs)
+    def __init__(self, root, **kwargs):
+        super().__init__(root, **kwargs)
         self.title("Logo Editor")
         self.attributes('-topmost', 1)
 
