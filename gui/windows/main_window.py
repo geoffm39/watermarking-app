@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
+from image_manager import ImageManager
 from gui.custom_widgets.editing_canvas import EditingCanvas
 from gui.custom_widgets.thumbnail_canvas import ThumbnailCanvas
 from gui.windows.edit_text_window import EditTextWindow
@@ -16,6 +17,8 @@ class MainWindow:
         self.root.option_add('*tearOFF', FALSE)
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
+
+        self.image_manager = ImageManager()
 
         self.text_editor_window = None
         self.logo_editor_window = None
@@ -42,8 +45,7 @@ class MainWindow:
         # thumbnail view widgets
         self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame,
                                                 root=self.root,
-                                                images=self.images,
-                                                thumbnails=self.thumbnails,
+                                                image_manager=self.image_manager,
                                                 width=1080,
                                                 height=654)
         self.canvas_scrollbar = ttk.Scrollbar(self.canvas_frame,
@@ -51,13 +53,13 @@ class MainWindow:
                                               command=self.thumbnail_canvas.yview)
         self.thumbnail_canvas.configure(yscrollcommand=self.canvas_scrollbar.set)
         self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
-        self.clear_files_button = ttk.Button(mainframe, text='Clear Files',
-                                             command=self.thumbnail_canvas.remove_all_images)
+        self.clear_files_button = ttk.Button(mainframe, text='Clear Files', command=self.clear_files)
         self.start_editing_button = ttk.Button(mainframe, text='Start Editing', command=self.editing_view)
 
         # editing view widgets
         self.editing_canvas = EditingCanvas(self.canvas_frame,
                                             main_window=self,
+                                            image_manager=self.image_manager,
                                             images=self.images,
                                             thumbnails=self.thumbnails,
                                             image_index=self.current_image_index,
@@ -84,16 +86,23 @@ class MainWindow:
 
     def load_files(self):
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
-        self.thumbnail_canvas.add_images(files)
+        self.image_manager.add_images(files)
+        self.thumbnail_canvas.update_thumbnails()
+
+    def clear_files(self):
+        self.image_manager.remove_all_images()
+        self.thumbnail_canvas.update_thumbnails()
 
     def open_text_editor(self):
         self.text_editor_window = EditTextWindow(self.root,
+                                                 image_manager=self.image_manager,
                                                  parent=self,
                                                  current_image=self.current_image,
                                                  editing_canvas=self.editing_canvas)
 
     def open_logo_editor(self):
-        self.logo_editor_window = EditLogoWindow(self.root)
+        self.logo_editor_window = EditLogoWindow(self.root,
+                                                 image_manager=self.image_manager)
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()

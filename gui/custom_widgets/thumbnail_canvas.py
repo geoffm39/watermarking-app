@@ -2,17 +2,18 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 
+from image_manager import ImageManager
+
 
 class ThumbnailCanvas(Canvas):
-    def __init__(self, parent, root, images, thumbnails, **kwargs):
+    def __init__(self, parent, root, image_manager: ImageManager, **kwargs):
         super().__init__(parent, **kwargs)
 
         self.root = root
+        self.image_manager = image_manager
+
         self.thumbnail_frame = ttk.Frame(self)
         self.create_window(0, 0, anchor='nw', window=self.thumbnail_frame)
-
-        self.images = images
-        self.thumbnails = thumbnails
 
         self.thumbnail_menu = Menu(self.root, tearoff=0)
         self.thumbnail_menu.add_command(label='Rotate Right 90°', command=self.rotate_image_right)
@@ -29,53 +30,25 @@ class ThumbnailCanvas(Canvas):
         self.thumbnail_menu.post(event.x_root, event.y_root)
 
     def rotate_image_left(self):
-        image = self.images[self.focused_label.label_id]
-        rotated_img = image.transpose(Image.Transpose.ROTATE_90)
-        self.images[self.focused_label.label_id] = rotated_img
-        rotated_thumb = rotated_img.copy()
-        rotated_thumb.thumbnail((200, 200))
-        rotated_thumb = ImageTk.PhotoImage(rotated_thumb)
-        self.thumbnails[self.focused_label.label_id] = rotated_thumb
+        self.image_manager.rotate_image_left(self.focused_label.label_id)
         self.update_thumbnails()
         self.focused_label = None
 
     def rotate_image_right(self):
-        image = self.images[self.focused_label.label_id]
-        rotated_img = image.transpose(Image.Transpose.ROTATE_270)
-        self.images[self.focused_label.label_id] = rotated_img
-        rotated_thumb = rotated_img.copy()
-        rotated_thumb.thumbnail((200, 200))
-        rotated_thumb = ImageTk.PhotoImage(rotated_thumb)
-        self.thumbnails[self.focused_label.label_id] = rotated_thumb
+        self.image_manager.rotate_image_right(self.focused_label.label_id)
         self.update_thumbnails()
         self.focused_label = None
 
     def remove_image(self):
-        self.images.pop(self.focused_label.label_id)
-        self.thumbnails.pop(self.focused_label.label_id)
+        self.image_manager.remove_image(self.focused_label.label_id)
         self.update_thumbnails()
         self.focused_label = None
-
-    def remove_all_images(self):
-        self.images = []
-        self.thumbnails = []
-        self.update_thumbnails()
-
-    def add_images(self, filepaths):
-        for filepath in filepaths:
-            with Image.open(filepath) as image:
-                self.images.append(image)
-                thumb_img = image.copy()
-            thumb_img.thumbnail((200, 200))
-            thumb_img = ImageTk.PhotoImage(thumb_img)
-            self.thumbnails.append(thumb_img)
-        self.update_thumbnails()
 
     def update_thumbnails(self):
         for thumbnail_label in self.thumbnail_frame.winfo_children():
             thumbnail_label.unbind('<Button-3>')
             thumbnail_label.destroy()
-        for i, image in enumerate(self.thumbnails):
+        for i, image in enumerate(self.image_manager.get_thumbnails()):
             thumbnail_label = ttk.Label(self.thumbnail_frame, image=image)
             thumbnail_label.grid(row=i // 5, column=i % 5, padx=5, pady=5)
             thumbnail_label.bind('<Button-3>', self.show_image_menu)
