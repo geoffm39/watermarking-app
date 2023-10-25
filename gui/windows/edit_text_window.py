@@ -116,8 +116,6 @@ class EditTextWindow(Toplevel):
         self.parent.current_image.alpha_composite(self.text_image, dest=(2450, 500))
         self.parent.current_image.show()
 
-    # todo CREATE A NEW CLASS THAT HOLDS ALL THE IMAGE DATA AND CONTROL!!!!!
-
     def test2(self):
         # THIS NOT RETURNING ANY TUPLE
         print(self.editing_canvas.coords(self.editing_canvas.current_photo_image))
