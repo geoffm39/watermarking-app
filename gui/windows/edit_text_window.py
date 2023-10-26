@@ -37,21 +37,21 @@ class EditTextWindow(Toplevel):
         self.font_combobox['values'] = get_font_names(self.fonts_dict)
         self.font_combobox.bind('<<ComboboxSelected>>', self.select_font)
 
-        self.size = DoubleVar()
+        self.size = IntVar(value=50)
         self.size_scale = ttk.Scale(mainframe,
                                     orient=HORIZONTAL,
                                     variable=self.size,
                                     length=300,
-                                    from_=1.0,
-                                    to=100.0)
+                                    from_=1,
+                                    to=1000)
 
-        self.opacity = DoubleVar()
+        self.opacity = IntVar(value=128)
         self.opacity_scale = ttk.Scale(mainframe,
                                        orient=HORIZONTAL,
                                        variable=self.opacity,
                                        length=300,
-                                       from_=1.0,
-                                       to=100.0)
+                                       from_=0,
+                                       to=255)
 
         self.rotation = DoubleVar()
         self.rotation_scale = ttk.Scale(mainframe,
@@ -61,9 +61,10 @@ class EditTextWindow(Toplevel):
                                         from_=-180.0,
                                         to=180.0)
 
-        self.color_button = ttk.Button(mainframe,
-                                       text='Colour',
-                                       command=self.set_colour)
+        self.colour = (255, 255, 255)
+        self.colour_button = ttk.Button(mainframe,
+                                        text='Colour',
+                                        command=self.set_colour)
 
         self.tiled = BooleanVar()
         self.tiled_checkbutton = ttk.Checkbutton(mainframe,
@@ -86,7 +87,7 @@ class EditTextWindow(Toplevel):
         self.size_scale.grid(column=0, row=3)
         self.opacity_scale.grid(column=0, row=4)
         self.rotation_scale.grid(column=0, row=5)
-        self.color_button.grid(column=0, row=6)
+        self.colour_button.grid(column=0, row=6)
         self.tiled_checkbutton.grid(column=0, row=7)
         self.tiled_spacing_scale.grid(column=0, row=8)
 
@@ -97,16 +98,18 @@ class EditTextWindow(Toplevel):
         self.test2_button.grid(column=0, row=10)
 
     def test(self):
-        # then create a thumbnail of that image after adding the text
-        # then add that image to the canvas
         self.text_image = Image.new('RGBA',
                                     self.image_manager.get_image(self.editing_canvas.current_image_index).size,
                                     (255, 255, 255, 0))
-        fnt = ImageFont.truetype(self.font_path, 120)
-        d = ImageDraw.Draw(self.text_image)
-        d.text((10, 10), "Hello", font=fnt, fill=(255, 255, 255, 128))
-        # draw text, full opacity
-        d.text((10, 60), "World", font=fnt, fill=(255, 255, 255, 255))
+        font = ImageFont.truetype(self.font_path, self.size.get())
+        draw = ImageDraw.Draw(self.text_image)
+        r, g, b = self.colour
+        print(draw.textlength(self.text.get(), font))
+        draw.text((int(self.text_image.size[0]/2), int(self.text_image.size[1]/2)),
+                  self.text.get(),
+                  font=font,
+                  fill=(r, g, b, self.opacity.get()),
+                  anchor='mm')
         self.text_photo_image = self.text_image.copy()
         self.text_photo_image.thumbnail((1080, 654))
         self.text_photo_image = ImageTk.PhotoImage(self.text_photo_image)
@@ -148,7 +151,7 @@ class EditTextWindow(Toplevel):
 
     def set_colour(self):
         colour = colorchooser.askcolor(parent=self)
-        print(colour)  # returns a tuple with a tuple of the RGB and the hash code
+        self.colour = colour[0]
 
 
     def toggle_tiles(self):
