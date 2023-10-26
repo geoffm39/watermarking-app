@@ -58,12 +58,7 @@ class MainWindow:
 
         # editing view widgets
         self.editing_canvas = EditingCanvas(self.canvas_frame,
-                                            main_window=self,
                                             image_manager=self.image_manager,
-                                            images=self.images,
-                                            thumbnails=self.thumbnails,
-                                            image_index=self.current_image_index,
-                                            current_image=self.current_image,
                                             width=1080,
                                             height=654)
         with Image.open('gui/images/next_arrow.png') as img:

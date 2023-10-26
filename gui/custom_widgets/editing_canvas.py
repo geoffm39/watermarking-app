@@ -6,42 +6,41 @@ from image_manager import ImageManager
 
 
 class EditingCanvas(Canvas):
-    def __init__(self, parent, main_window, image_manager: ImageManager,images, thumbnails, image_index, current_image,  **kwargs):
+    def __init__(self, parent, image_manager: ImageManager, **kwargs):
         super().__init__(parent, **kwargs)
 
-        self.main_window = main_window
         self.image_manager = image_manager
         self.editing_thumbnail = None
-
-        self.images = images
-        self.thumbnails = thumbnails
-        self.current_image = current_image
-        self.current_photo_image = None
-
         self.current_image_index = 0
+
         self.selected_image = None
         self.last_x = 0
         self.last_y = 0
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
+        self.image_manager.set_editing_thumbnail(self.current_image_index)
         self.show_current_image()
 
     def next_image_index(self):
         self.current_image_index += 1
         if self.current_image_index == self.image_manager.get_image_count():
             self.current_image_index = 0
+        self.image_manager.set_editing_thumbnail(self.current_image_index)
         self.show_current_image()
 
     def previous_image_index(self):
         self.current_image_index -= 1
         if self.current_image_index < 0:
             self.current_image_index = self.image_manager.get_image_count() - 1
+        self.image_manager.set_editing_thumbnail(self.current_image_index)
         self.show_current_image()
 
     def show_current_image(self):
         self.delete('all')
-        self.editing_thumbnail = self.image_manager.get_editing_thumbnail(self.current_image_index)
+        if self.image_manager.get_editing_thumbnail() is None:
+            self.image_manager.set_editing_thumbnail(self.current_image_index)
+        self.editing_thumbnail = self.image_manager.get_editing_thumbnail()
         self.create_image(540, 327, image=self.editing_thumbnail)
         self.update_idletasks()
 
