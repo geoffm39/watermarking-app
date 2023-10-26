@@ -53,7 +53,7 @@ class EditTextWindow(Toplevel):
                                        from_=0,
                                        to=255)
 
-        self.rotation = DoubleVar()
+        self.rotation = IntVar(value=0)
         self.rotation_scale = ttk.Scale(mainframe,
                                         orient=HORIZONTAL,
                                         variable=self.rotation,
@@ -104,12 +104,12 @@ class EditTextWindow(Toplevel):
         font = ImageFont.truetype(self.font_path, self.size.get())
         draw = ImageDraw.Draw(self.text_image)
         r, g, b = self.colour
-        print(draw.textlength(self.text.get(), font))
         draw.text((int(self.text_image.size[0]/2), int(self.text_image.size[1]/2)),
                   self.text.get(),
                   font=font,
                   fill=(r, g, b, self.opacity.get()),
                   anchor='mm')
+        self.text_image = self.text_image.rotate(self.rotation.get())
         self.text_photo_image = self.text_image.copy()
         self.text_photo_image.thumbnail((1080, 654))
         self.text_photo_image = ImageTk.PhotoImage(self.text_photo_image)
