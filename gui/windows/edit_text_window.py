@@ -4,6 +4,7 @@ from tkinter import colorchooser
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 from image_manager import ImageManager
+from font_manager import get_font_dict, get_font_names
 
 
 class EditTextWindow(Toplevel):
@@ -28,8 +29,12 @@ class EditTextWindow(Toplevel):
         self.text = StringVar(value='Enter Text Here')
         self.text_entry = ttk.Entry(mainframe, textvariable=self.text)
 
-        self.font = StringVar()
+        self.fonts_dict = get_font_dict()
+        self.font = StringVar(value=get_font_names(self.fonts_dict)[0])
+        self.font_path = self.fonts_dict[self.font.get()]
         self.font_combobox = ttk.Combobox(mainframe, textvariable=self.font)
+        self.font_combobox.state(['readonly'])
+        self.font_combobox['values'] = get_font_names(self.fonts_dict)
         self.font_combobox.bind('<<ComboboxSelected>>', self.select_font)
 
         self.size = DoubleVar()
@@ -97,7 +102,7 @@ class EditTextWindow(Toplevel):
         self.text_image = Image.new('RGBA',
                                     self.image_manager.get_image(self.editing_canvas.current_image_index).size,
                                     (255, 255, 255, 0))
-        fnt = ImageFont.truetype("fonts/aspire.ttf", 120)
+        fnt = ImageFont.truetype(self.font_path, 120)
         d = ImageDraw.Draw(self.text_image)
         d.text((10, 10), "Hello", font=fnt, fill=(255, 255, 255, 128))
         # draw text, full opacity
@@ -134,8 +139,12 @@ class EditTextWindow(Toplevel):
         image.alpha_composite(self.text_image, dest=(watermark_x, watermark_y))
         image.show()
 
-    def select_font(self):
-        pass
+        # WILL ALSO NEED TO ADJUST THE SIZE OF THE TEXT IMAGE BASED ON EACH IMAGE WHEN BATCH ADDING!!
+        # CAN RESIZE THE TEXT IMAGE BASED ON THE RATIO OF DIFFERENCE FROM FIRST IMAGE TO EACH OTHER IMAGE
+
+    def select_font(self, event):
+        font_name = self.font.get()
+        self.font_path = self.fonts_dict[font_name]
 
     def set_colour(self):
         colour = colorchooser.askcolor(parent=self)

@@ -60,7 +60,3 @@ class EditingCanvas(Canvas):
             y_delta = y - self.last_y
             self.move(self.selected_image, x_delta, y_delta)
             self.last_x, self.last_y = x, y
-
-            # BUT THIS WORKS
-            print(self.coords(self.selected_image))
-            print(self.coords(self.canvas_image))
