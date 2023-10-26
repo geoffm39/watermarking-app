@@ -91,8 +91,6 @@ class MainWindow:
     def open_text_editor(self):
         self.text_editor_window = EditTextWindow(self.root,
                                                  image_manager=self.image_manager,
-                                                 parent=self,
-                                                 current_image=self.current_image,
                                                  editing_canvas=self.editing_canvas)
 
     def open_logo_editor(self):

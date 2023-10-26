@@ -10,7 +10,8 @@ class EditingCanvas(Canvas):
         super().__init__(parent, **kwargs)
 
         self.image_manager = image_manager
-        self.editing_thumbnail = None
+        self.editing_photo_image = None
+        self.canvas_image = None
         self.current_image_index = 0
 
         self.selected_image = None
@@ -19,29 +20,29 @@ class EditingCanvas(Canvas):
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
-        self.image_manager.set_editing_thumbnail(self.current_image_index)
+        self.image_manager.set_current_image(self.current_image_index)
         self.show_current_image()
 
     def next_image_index(self):
         self.current_image_index += 1
         if self.current_image_index == self.image_manager.get_image_count():
             self.current_image_index = 0
-        self.image_manager.set_editing_thumbnail(self.current_image_index)
+        self.image_manager.set_current_image(self.current_image_index)
         self.show_current_image()
 
     def previous_image_index(self):
         self.current_image_index -= 1
         if self.current_image_index < 0:
             self.current_image_index = self.image_manager.get_image_count() - 1
-        self.image_manager.set_editing_thumbnail(self.current_image_index)
+        self.image_manager.set_current_image(self.current_image_index)
         self.show_current_image()
 
     def show_current_image(self):
         self.delete('all')
-        if self.image_manager.get_editing_thumbnail() is None:
-            self.image_manager.set_editing_thumbnail(self.current_image_index)
-        self.editing_thumbnail = self.image_manager.get_editing_thumbnail()
-        self.create_image(540, 327, image=self.editing_thumbnail)
+        if self.image_manager.get_current_photo_image() is None:
+            self.image_manager.set_current_image(self.current_image_index)
+        self.editing_photo_image = self.image_manager.get_current_photo_image()
+        self.canvas_image = self.create_image(540, 327, image=self.editing_photo_image)
         self.update_idletasks()
 
     def on_image_press(self, event):
@@ -62,3 +63,4 @@ class EditingCanvas(Canvas):
 
             # BUT THIS WORKS
             print(self.coords(self.selected_image))
+            print(self.coords(self.canvas_image))

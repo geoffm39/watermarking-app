@@ -7,16 +7,14 @@ from image_manager import ImageManager
 
 
 class EditTextWindow(Toplevel):
-    def __init__(self, root, image_manager: ImageManager, parent, current_image, editing_canvas, **kwargs):
+    def __init__(self, root, image_manager: ImageManager, editing_canvas, **kwargs):
         super().__init__(root, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
 
         self.image_manager = image_manager
-
-        self.parent = parent
-        self.current_image = current_image
         self.editing_canvas = editing_canvas
+
         self.text_photo_image = None
         self.text_image = None
 
@@ -96,7 +94,9 @@ class EditTextWindow(Toplevel):
     def test(self):
         # then create a thumbnail of that image after adding the text
         # then add that image to the canvas
-        self.text_image = Image.new('RGBA', self.parent.current_image.size, (255, 255, 255, 0))
+        self.text_image = Image.new('RGBA',
+                                    self.image_manager.get_image(self.editing_canvas.current_image_index).size,
+                                    (255, 255, 255, 0))
         fnt = ImageFont.truetype("fonts/aspire.ttf", 120)
         d = ImageDraw.Draw(self.text_image)
         d.text((10, 10), "Hello", font=fnt, fill=(255, 255, 255, 128))
@@ -112,14 +112,27 @@ class EditTextWindow(Toplevel):
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<B1-Motion>", self.editing_canvas.on_image_drag)
         self.editing_canvas.update_idletasks()
 
-        self.parent.current_image = self.parent.current_image.convert('RGBA')
-        self.parent.current_image.alpha_composite(self.text_image, dest=(2450, 500))
-        self.parent.current_image.show()
-
     def test2(self):
-        # THIS NOT RETURNING ANY TUPLE
-        print(self.editing_canvas.coords(self.editing_canvas.current_photo_image))
-        print(self.editing_canvas.coords(self.text_photo_image))
+        print(self.editing_canvas.coords(self.editing_canvas.canvas_image))
+        print(self.editing_canvas.coords(self.editing_canvas.watermark))
+
+        print(self.editing_canvas.bbox(self.editing_canvas.canvas_image))
+        print(self.image_manager.get_current_image().size)
+
+        canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
+        image_x_dim, image_y_dim = self.image_manager.get_image(self.editing_canvas.current_image_index).size
+        x_ratio = image_x_dim / (canvas_x2 - canvas_x1)
+        y_ratio = image_y_dim / (canvas_y2 - canvas_y1)
+
+        image_x, image_y = self.editing_canvas.coords(self.editing_canvas.canvas_image)
+        text_x, text_y = self.editing_canvas.coords(self.editing_canvas.watermark)
+
+        watermark_x = int((text_x - image_x) * x_ratio)
+        watermark_y = int((text_y - image_y) * y_ratio)
+
+        image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
+        image.alpha_composite(self.text_image, dest=(watermark_x, watermark_y))
+        image.show()
 
     def select_font(self):
         pass

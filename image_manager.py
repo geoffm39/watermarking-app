@@ -6,7 +6,8 @@ class ImageManager:
         self.images = []
         self.thumbnails = []
 
-        self.current_editing_thumb = None
+        self.current_editing_image = None
+        self.current_editing_photo_image = None
 
         self.text_watermarks = []
         self.logo_watermarks = []
@@ -29,14 +30,21 @@ class ImageManager:
     def get_image_count(self):
         return len(self.images)
 
-    def set_editing_thumbnail(self, index: int):
+    def get_current_photo_image(self):
+        return self.current_editing_photo_image
+
+    def get_current_image(self):
+        return self.current_editing_image
+
+    def get_image(self, index):
+        return self.images[index]
+
+    def set_current_image(self, index: int):
         image = self.images[index]
         editing_img = image.copy()
         editing_img.thumbnail((1080, 654))
-        self.current_editing_thumb = ImageTk.PhotoImage(editing_img)
-
-    def get_editing_thumbnail(self):
-        return self.current_editing_thumb
+        self.current_editing_image = editing_img
+        self.current_editing_photo_image = ImageTk.PhotoImage(editing_img)
 
     def remove_all_images(self):
         self.images = []
