@@ -27,6 +27,7 @@ class EditTextWindow(Toplevel):
         self.title_label = ttk.Label(mainframe, text='Text Properties')
 
         self.text = StringVar(value='Enter Text Here')
+        self.text.trace_add('write', self.update_watermark)
         self.text_entry = ttk.Entry(mainframe, textvariable=self.text)
 
         self.fonts_dict = get_font_dict()
@@ -43,7 +44,8 @@ class EditTextWindow(Toplevel):
                                     variable=self.size,
                                     length=300,
                                     from_=1,
-                                    to=1000)
+                                    to=1000,
+                                    command=self.update_watermark)
 
         self.opacity = IntVar(value=128)
         self.opacity_scale = ttk.Scale(mainframe,
@@ -51,7 +53,8 @@ class EditTextWindow(Toplevel):
                                        variable=self.opacity,
                                        length=300,
                                        from_=0,
-                                       to=255)
+                                       to=255,
+                                       command=self.update_watermark)
 
         self.rotation = IntVar(value=0)
         self.rotation_scale = ttk.Scale(mainframe,
@@ -59,7 +62,8 @@ class EditTextWindow(Toplevel):
                                         variable=self.rotation,
                                         length=300,
                                         from_=-180.0,
-                                        to=180.0)
+                                        to=180.0,
+                                        command=self.update_watermark)
 
         self.colour = (255, 255, 255)
         self.colour_button = ttk.Button(mainframe,
@@ -91,24 +95,29 @@ class EditTextWindow(Toplevel):
         self.tiled_checkbutton.grid(column=0, row=7)
         self.tiled_spacing_scale.grid(column=0, row=8)
 
+        self.update_watermark()
+
         # TESTING BUTTON
-        self.test_button = ttk.Button(mainframe, text='test', command=self.test)
+        self.test_button = ttk.Button(mainframe, text='test', command=self.update_watermark)
         self.test_button.grid(column=0, row=9)
         self.test2_button = ttk.Button(mainframe, text='test2', command=self.test2)
         self.test2_button.grid(column=0, row=10)
 
-    def test(self):
-        self.text_image, self.text_photo_image = self.image_manager.create_text_watermark(index=self.editing_canvas.current_image_index,
-                                                                   text=self.text.get(),
-                                                                   font_path=self.font_path,
-                                                                   font_size=self.size.get(),
-                                                                   rgb_values=self.colour,
-                                                                   opacity=self.opacity.get(),
-                                                                   rotation=self.rotation.get())
+    def update_watermark(self, *args):
+        self.text_image, self.text_photo_image = self.image_manager.create_text_watermark(
+            index=self.editing_canvas.current_image_index,
+            text=self.text.get(),
+            font_path=self.font_path,
+            font_size=self.size.get(),
+            rgb_values=self.colour,
+            opacity=self.opacity.get(),
+            rotation=self.rotation.get())
         self.editing_canvas.watermark = self.editing_canvas.create_image(540, 327, image=self.text_photo_image)
 
-        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonPress-1>", self.editing_canvas.on_image_press)
-        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonRelease-1>", self.editing_canvas.on_image_release)
+        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonPress-1>",
+                                     self.editing_canvas.on_image_press)
+        self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonRelease-1>",
+                                     self.editing_canvas.on_image_release)
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<B1-Motion>", self.editing_canvas.on_image_drag)
         self.editing_canvas.update_idletasks()
 
@@ -131,7 +140,6 @@ class EditTextWindow(Toplevel):
         # WHEN APPLYING TO ALL IMAGES, CREATE A PERCENTAGE LOCATION ON X AXIS TO USE FOR EACH IMAGE SIZE
         # ALSO GET THE SIZE OF THE WATERMARK AND CREATE A PERCENTAGE SIZE TO APPLY TO ALL IMAGES
 
-
         image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
         image.alpha_composite(self.text_image, dest=(watermark_x, watermark_y))
         image.show()
@@ -142,11 +150,12 @@ class EditTextWindow(Toplevel):
     def select_font(self, event):
         font_name = self.font.get()
         self.font_path = self.fonts_dict[font_name]
+        self.update_watermark()
 
     def set_colour(self):
         colour = colorchooser.askcolor(parent=self)
         self.colour = colour[0]
-
+        self.update_watermark()
 
     def toggle_tiles(self):
         pass  # enable and disable the tiled spacing scale
