@@ -98,21 +98,13 @@ class EditTextWindow(Toplevel):
         self.test2_button.grid(column=0, row=10)
 
     def test(self):
-        self.text_image = Image.new('RGBA',
-                                    self.image_manager.get_image(self.editing_canvas.current_image_index).size,
-                                    (255, 255, 255, 0))
-        font = ImageFont.truetype(self.font_path, self.size.get())
-        draw = ImageDraw.Draw(self.text_image)
-        r, g, b = self.colour
-        draw.text((int(self.text_image.size[0]/2), int(self.text_image.size[1]/2)),
-                  self.text.get(),
-                  font=font,
-                  fill=(r, g, b, self.opacity.get()),
-                  anchor='mm')
-        self.text_image = self.text_image.rotate(self.rotation.get())
-        self.text_photo_image = self.text_image.copy()
-        self.text_photo_image.thumbnail((1080, 654))
-        self.text_photo_image = ImageTk.PhotoImage(self.text_photo_image)
+        self.text_image, self.text_photo_image = self.image_manager.create_text_watermark(index=self.editing_canvas.current_image_index,
+                                                                   text=self.text.get(),
+                                                                   font_path=self.font_path,
+                                                                   font_size=self.size.get(),
+                                                                   rgb_values=self.colour,
+                                                                   opacity=self.opacity.get(),
+                                                                   rotation=self.rotation.get())
         self.editing_canvas.watermark = self.editing_canvas.create_image(540, 327, image=self.text_photo_image)
 
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonPress-1>", self.editing_canvas.on_image_press)
@@ -132,11 +124,13 @@ class EditTextWindow(Toplevel):
         x_ratio = image_x_dim / (canvas_x2 - canvas_x1)
         y_ratio = image_y_dim / (canvas_y2 - canvas_y1)
 
-        image_x, image_y = self.editing_canvas.coords(self.editing_canvas.canvas_image)
-        text_x, text_y = self.editing_canvas.coords(self.editing_canvas.watermark)
+        text_x1, text_y1, text_x2, text_y2 = self.editing_canvas.bbox(self.editing_canvas.watermark)
+        watermark_x = int((text_x1 - canvas_x1) * x_ratio)
+        watermark_y = int((text_y1 - canvas_y1) * y_ratio)
 
-        watermark_x = int((text_x - image_x) * x_ratio)
-        watermark_y = int((text_y - image_y) * y_ratio)
+        # WHEN APPLYING TO ALL IMAGES, CREATE A PERCENTAGE LOCATION ON X AXIS TO USE FOR EACH IMAGE SIZE
+        # ALSO GET THE SIZE OF THE WATERMARK AND CREATE A PERCENTAGE SIZE TO APPLY TO ALL IMAGES
+
 
         image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
         image.alpha_composite(self.text_image, dest=(watermark_x, watermark_y))

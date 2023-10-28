@@ -8,12 +8,11 @@ class ImageManager:
 
         self.current_editing_image = None
         self.current_editing_photo_image = None
+        self.current_text_image = None
+        self.current_text_photo_image = None
 
         self.text_watermarks = []
         self.logo_watermarks = []
-
-        # would it be better to have a dictionary rather than multiple lists?
-        # should the file path also be here?
 
     def add_images(self, filepaths):
         for filepath in filepaths:
@@ -38,6 +37,30 @@ class ImageManager:
 
     def get_image(self, index):
         return self.images[index]
+
+    def create_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
+        watermark = Image.new('RGBA',
+                              self.get_image(index).size,
+                              (255, 255, 255, 0))
+        font = ImageFont.truetype(font_path, font_size)
+        draw = ImageDraw.Draw(watermark)
+        r, g, b = rgb_values
+        draw.text((int(watermark.size[0] / 2), int(watermark.size[1] / 2)),
+                  text=text,
+                  font=font,
+                  fill=(r, g, b, opacity),
+                  anchor='mm')
+        watermark = watermark.rotate(rotation)
+        alpha_channel = watermark.getchannel('A')
+        bbox = alpha_channel.getbbox()
+        self.current_text_image = watermark.crop(bbox)
+        photo_image = watermark.copy()
+        photo_image.thumbnail((1080, 654))
+        alpha_channel = photo_image.getchannel('A')
+        bbox = alpha_channel.getbbox()
+        self.current_text_photo_image = photo_image.crop(bbox)
+        self.current_text_photo_image = ImageTk.PhotoImage(self.current_text_photo_image)
+        return self.current_text_image, self.current_text_photo_image
 
     def set_current_image(self, index: int):
         image = self.images[index]
@@ -71,4 +94,3 @@ class ImageManager:
         rotated_thumb.thumbnail((200, 200))
         rotated_thumb = ImageTk.PhotoImage(rotated_thumb)
         self.thumbnails[index] = rotated_thumb
-
