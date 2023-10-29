@@ -15,8 +15,8 @@ class EditingCanvas(Canvas):
         self.current_image_index = 0
 
         self.selected_image = None
-        self.last_x = 0
-        self.last_y = 0
+        self.last_x = 540
+        self.last_y = 327
 
     def set_image_index(self, image_index):
         self.current_image_index = image_index
@@ -60,3 +60,7 @@ class EditingCanvas(Canvas):
             y_delta = y - self.last_y
             self.move(self.selected_image, x_delta, y_delta)
             self.last_x, self.last_y = x, y
+
+    def reset_image_location(self):
+        self.last_x = 540
+        self.last_y = 327

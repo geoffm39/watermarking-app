@@ -3,12 +3,13 @@ from tkinter import ttk
 from tkinter import colorchooser
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 
+from gui.custom_widgets.editing_canvas import EditingCanvas
 from image_manager import ImageManager
 from font_manager import get_font_dict, get_font_names
 
 
 class EditTextWindow(Toplevel):
-    def __init__(self, root, image_manager: ImageManager, editing_canvas, **kwargs):
+    def __init__(self, root, image_manager: ImageManager, editing_canvas: EditingCanvas, **kwargs):
         super().__init__(root, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
@@ -85,6 +86,8 @@ class EditTextWindow(Toplevel):
                                              from_=1.0,
                                              to=100.0)
 
+        self.reset_button = ttk.Button(mainframe, text='Reset', command=self.reset_watermark)
+
         self.title_label.grid(column=0, row=0)
         self.text_entry.grid(column=0, row=1)
         self.font_combobox.grid(column=0, row=2)
@@ -94,14 +97,22 @@ class EditTextWindow(Toplevel):
         self.colour_button.grid(column=0, row=6)
         self.tiled_checkbutton.grid(column=0, row=7)
         self.tiled_spacing_scale.grid(column=0, row=8)
+        self.reset_button.grid(column=0, row=9)
 
         self.update_watermark()
 
         # TESTING BUTTON
-        self.test_button = ttk.Button(mainframe, text='test', command=self.update_watermark)
-        self.test_button.grid(column=0, row=9)
         self.test2_button = ttk.Button(mainframe, text='test2', command=self.test2)
         self.test2_button.grid(column=0, row=10)
+
+    def reset_watermark(self):
+        self.size.set(50)
+        self.opacity.set(128)
+        self.rotation.set(0)
+        self.colour = (255, 255, 255)
+        self.text.set('Enter Text Here')
+        self.editing_canvas.reset_image_location()
+        self.update_watermark()
 
     def update_watermark(self, *args):
         self.text_image, self.text_photo_image = self.image_manager.create_text_watermark(
@@ -112,7 +123,7 @@ class EditTextWindow(Toplevel):
             rgb_values=self.colour,
             opacity=self.opacity.get(),
             rotation=self.rotation.get())
-        self.editing_canvas.watermark = self.editing_canvas.create_image(540, 327, image=self.text_photo_image)
+        self.editing_canvas.watermark = self.editing_canvas.create_image(self.editing_canvas.last_x, self.editing_canvas.last_y, image=self.text_photo_image)
 
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonPress-1>",
                                      self.editing_canvas.on_image_press)
