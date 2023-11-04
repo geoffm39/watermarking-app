@@ -18,7 +18,6 @@ class EditTextWindow(Toplevel):
         self.editing_canvas = editing_canvas
 
         self.text_photo_image = None
-        self.text_image = None
 
         mainframe = ttk.Frame(self)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -86,7 +85,7 @@ class EditTextWindow(Toplevel):
                                              from_=1.0,
                                              to=100.0)
 
-        self.reset_button = ttk.Button(mainframe, text='Reset', command=self.reset_watermark)
+        self.reset_button = ttk.Button(mainframe, text='Reset Watermark', command=self.reset_watermark)
 
         self.title_label.grid(column=0, row=0)
         self.text_entry.grid(column=0, row=1)
@@ -101,9 +100,8 @@ class EditTextWindow(Toplevel):
 
         self.update_watermark()
 
-        # TESTING BUTTON
-        self.test2_button = ttk.Button(mainframe, text='test2', command=self.test2)
-        self.test2_button.grid(column=0, row=10)
+        self.apply_button = ttk.Button(mainframe, text='Apply Watermark', command=self.apply_watermark)
+        self.apply_button.grid(column=0, row=10)
 
     def reset_watermark(self):
         self.size.set(50)
@@ -115,7 +113,7 @@ class EditTextWindow(Toplevel):
         self.update_watermark()
 
     def update_watermark(self, *args):
-        self.text_image, self.text_photo_image = self.image_manager.create_text_watermark(
+        self.text_photo_image = self.image_manager.set_text_watermark(
             index=self.editing_canvas.current_image_index,
             text=self.text.get(),
             font_path=self.font_path,
@@ -123,7 +121,9 @@ class EditTextWindow(Toplevel):
             rgb_values=self.colour,
             opacity=self.opacity.get(),
             rotation=self.rotation.get())
-        self.editing_canvas.watermark = self.editing_canvas.create_image(self.editing_canvas.last_x, self.editing_canvas.last_y, image=self.text_photo_image)
+        self.editing_canvas.watermark = self.editing_canvas.create_image(self.editing_canvas.last_x,
+                                                                         self.editing_canvas.last_y,
+                                                                         image=self.text_photo_image)
 
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<ButtonPress-1>",
                                      self.editing_canvas.on_image_press)
@@ -132,31 +132,27 @@ class EditTextWindow(Toplevel):
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<B1-Motion>", self.editing_canvas.on_image_drag)
         self.editing_canvas.update_idletasks()
 
-    def test2(self):
-        print(self.editing_canvas.coords(self.editing_canvas.canvas_image))
-        print(self.editing_canvas.coords(self.editing_canvas.watermark))
-
-        print(self.editing_canvas.bbox(self.editing_canvas.canvas_image))
-        print(self.image_manager.get_current_image().size)
-
+    def apply_watermark(self):
+        # calculate the ratio size difference from original image on x and y axes
         canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
         image_x_dim, image_y_dim = self.image_manager.get_image(self.editing_canvas.current_image_index).size
         x_ratio = image_x_dim / (canvas_x2 - canvas_x1)
         y_ratio = image_y_dim / (canvas_y2 - canvas_y1)
 
+        # calculate the x and y locations of the watermark on the original image
         text_x1, text_y1, text_x2, text_y2 = self.editing_canvas.bbox(self.editing_canvas.watermark)
         watermark_x = int((text_x1 - canvas_x1) * x_ratio)
         watermark_y = int((text_y1 - canvas_y1) * y_ratio)
 
-        # WHEN APPLYING TO ALL IMAGES, CREATE A PERCENTAGE LOCATION ON X AXIS TO USE FOR EACH IMAGE SIZE
-        # ALSO GET THE SIZE OF THE WATERMARK AND CREATE A PERCENTAGE SIZE TO APPLY TO ALL IMAGES
+        # WHAT IF THE WATERMARK IS ROTATED!! THE SIZE RATIO WILL BE DIFFERENT DUE TO CALCULATION ALONG X AXIS
 
-        image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
-        image.alpha_composite(self.text_image, dest=(watermark_x, watermark_y))
-        image.show()
+        self.image_manager.set_watermark_ratios(x_ratio=watermark_x / image_x_dim,
+                                                y_ratio=watermark_y / image_y_dim,
+                                                size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim)
 
-        # WILL ALSO NEED TO ADJUST THE SIZE OF THE TEXT IMAGE BASED ON EACH IMAGE WHEN BATCH ADDING!!
-        # CAN RESIZE THE TEXT IMAGE BASED ON THE RATIO OF DIFFERENCE FROM FIRST IMAGE TO EACH OTHER IMAGE
+        # image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
+        # image.alpha_composite(self.image_manager.get_watermark(), dest=(watermark_x, watermark_y))
+        # image.show()
 
     def select_font(self, event):
         font_name = self.font.get()

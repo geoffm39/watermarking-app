@@ -3,16 +3,19 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont
 
 class ImageManager:
     def __init__(self):
+        # IMAGE LISTS
         self.images = []
         self.thumbnails = []
 
+        # IMAGE OBJECTS
         self.current_editing_image = None
         self.current_editing_photo_image = None
-        self.current_text_image = None
-        self.current_text_photo_image = None
+        self.watermark = None
 
-        self.text_watermarks = []
-        self.logo_watermarks = []
+        # WATERMARK LOCATION & SIZE VALUES
+        self.watermark_x_ratio = None
+        self.watermark_y_ratio = None
+        self.watermark_size_ratio = None
 
     def add_images(self, filepaths):
         for filepath in filepaths:
@@ -32,13 +35,20 @@ class ImageManager:
     def get_current_photo_image(self):
         return self.current_editing_photo_image
 
-    def get_current_image(self):
-        return self.current_editing_image
-
     def get_image(self, index):
         return self.images[index]
 
-    def create_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
+    def set_current_image(self, index: int):
+        image = self.images[index]
+        editing_img = image.copy()
+        editing_img.thumbnail((1080, 654))
+        self.current_editing_image = editing_img
+        self.current_editing_photo_image = ImageTk.PhotoImage(editing_img)
+
+    def get_watermark(self):
+        return self.watermark
+
+    def set_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
         watermark = Image.new('RGBA',
                               self.get_image(index).size,
                               (255, 255, 255, 0))
@@ -53,21 +63,19 @@ class ImageManager:
         watermark = watermark.rotate(rotation)
         alpha_channel = watermark.getchannel('A')
         bbox = alpha_channel.getbbox()
-        self.current_text_image = watermark.crop(bbox)
+        self.watermark = watermark.crop(bbox)
         photo_image = watermark.copy()
         photo_image.thumbnail((1080, 654))
         alpha_channel = photo_image.getchannel('A')
         bbox = alpha_channel.getbbox()
-        self.current_text_photo_image = photo_image.crop(bbox)
-        self.current_text_photo_image = ImageTk.PhotoImage(self.current_text_photo_image)
-        return self.current_text_image, self.current_text_photo_image
+        watermark_photo_image = photo_image.crop(bbox)
+        watermark_photo_image = ImageTk.PhotoImage(watermark_photo_image)
+        return watermark_photo_image
 
-    def set_current_image(self, index: int):
-        image = self.images[index]
-        editing_img = image.copy()
-        editing_img.thumbnail((1080, 654))
-        self.current_editing_image = editing_img
-        self.current_editing_photo_image = ImageTk.PhotoImage(editing_img)
+    def set_watermark_ratios(self, x_ratio, y_ratio, size_ratio):
+        self.watermark_x_ratio = x_ratio
+        self.watermark_y_ratio = y_ratio
+        self.watermark_size_ratio = size_ratio
 
     def remove_all_images(self):
         self.images = []

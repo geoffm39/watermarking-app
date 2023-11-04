@@ -14,6 +14,8 @@ class EditingCanvas(Canvas):
         self.canvas_image = None
         self.current_image_index = 0
 
+        self.watermark = None
+
         self.selected_image = None
         self.last_x = 540
         self.last_y = 327
