@@ -77,6 +77,17 @@ class ImageManager:
         self.watermark_y_ratio = y_ratio
         self.watermark_size_ratio = size_ratio
 
+    def apply_watermarks(self):
+        for i, image in enumerate(self.images):
+            image = image.convert('RGBA')
+            image.alpha_composite(self.get_watermark, dest=(image.size[0] * self.watermark_x_ratio,
+                                                            image.size[1] * self.watermark_y_ratio))
+            self.images[i] = image
+            # need to update thumbnails list
+
+    def remove_watermark(self):
+        self.watermark = None
+
     def remove_all_images(self):
         self.images = []
         self.thumbnails = []

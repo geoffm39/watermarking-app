@@ -9,13 +9,14 @@ from font_manager import get_font_dict, get_font_names
 
 
 class EditTextWindow(Toplevel):
-    def __init__(self, root, image_manager: ImageManager, editing_canvas: EditingCanvas, **kwargs):
+    def __init__(self, root, image_manager: ImageManager, editing_canvas: EditingCanvas, main_window, **kwargs):
         super().__init__(root, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
 
         self.image_manager = image_manager
         self.editing_canvas = editing_canvas
+        self.main_window = main_window
 
         self.text_photo_image = None
 
@@ -98,6 +99,7 @@ class EditTextWindow(Toplevel):
         self.tiled_spacing_scale.grid(column=0, row=8)
         self.reset_button.grid(column=0, row=9)
 
+        self.reset_watermark()
         self.update_watermark()
 
         self.apply_button = ttk.Button(mainframe, text='Apply Watermark', command=self.apply_watermark)
@@ -149,6 +151,12 @@ class EditTextWindow(Toplevel):
         self.image_manager.set_watermark_ratios(x_ratio=watermark_x / image_x_dim,
                                                 y_ratio=watermark_y / image_y_dim,
                                                 size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim)
+
+        self.main_window.add_text_button.configure(state='disabled')
+        self.main_window.add_logo_button.configure(state='disabled')
+        self.main_window.remove_button.configure(state='normal')
+        self.main_window.preview_watermarks_button.configure(state='normal')
+        self.destroy()
 
         # image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
         # image.alpha_composite(self.image_manager.get_watermark(), dest=(watermark_x, watermark_y))

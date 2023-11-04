@@ -73,8 +73,10 @@ class MainWindow:
                                             command=self.editing_canvas.previous_image_index)
         self.add_text_button = ttk.Button(self.button_frame, text='Add Text', command=self.open_text_editor)
         self.add_logo_button = ttk.Button(self.button_frame, text='Add Logo', command=self.open_logo_editor)
-        self.remove_button = ttk.Button(self.button_frame, text='Remove')
-        self.add_watermarks_button = ttk.Button(mainframe, text='Apply Watermarks')
+        self.remove_button = ttk.Button(self.button_frame, text='Remove', command=self.remove_watermark)
+        self.remove_button.configure(state='disabled')
+        self.preview_watermarks_button = ttk.Button(mainframe, text='Preview Watermarks')
+        self.preview_watermarks_button.configure(state='disabled')
         self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
 
         self.thumbnail_view()
@@ -91,11 +93,20 @@ class MainWindow:
     def open_text_editor(self):
         self.text_editor_window = EditTextWindow(self.root,
                                                  image_manager=self.image_manager,
-                                                 editing_canvas=self.editing_canvas)
+                                                 editing_canvas=self.editing_canvas,
+                                                 main_window=self)
 
     def open_logo_editor(self):
         self.logo_editor_window = EditLogoWindow(self.root,
                                                  image_manager=self.image_manager)
+
+    def remove_watermark(self):
+        self.image_manager.remove_watermark()
+        self.add_text_button.configure(state='normal')
+        self.add_logo_button.configure(state='normal')
+        self.remove_button.configure(state='disabled')
+        self.preview_watermarks_button.configure(state='disabled')
+        self.editing_canvas.show_current_image()
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()
@@ -104,7 +115,7 @@ class MainWindow:
         self.add_logo_button.grid_forget()
         self.remove_button.grid_forget()
         self.next_arrow_button.grid_forget()
-        self.add_watermarks_button.grid_forget()
+        self.preview_watermarks_button.grid_forget()
         self.back_to_thumbs_button.grid_forget()
 
         self.select_files_button.grid(column=0, row=0, padx=2)
@@ -113,6 +124,12 @@ class MainWindow:
 
         self.thumbnail_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.canvas_scrollbar.grid(column=1, row=0, sticky=(N, S))
+
+        self.image_manager.remove_watermark()
+        self.add_text_button.configure(state='normal')
+        self.add_logo_button.configure(state='normal')
+        self.remove_button.configure(state='disabled')
+        self.preview_watermarks_button.configure(state='disabled')
 
         self.thumbnail_canvas.update_thumbnails()
 
@@ -131,7 +148,7 @@ class MainWindow:
         self.add_logo_button.grid(column=2, row=0, padx=2)
         self.remove_button.grid(column=3, row=0, padx=2)
         self.next_arrow_button.grid(column=4, row=0, padx=2)
-        self.add_watermarks_button.grid(column=2, row=0, sticky=E, padx=5)
+        self.preview_watermarks_button.grid(column=2, row=0, sticky=E, padx=5)
         self.back_to_thumbs_button.grid(column=0, row=0, sticky=W, padx=5)
 
         self.editing_canvas.show_current_image()
