@@ -80,10 +80,15 @@ class ImageManager:
     def apply_watermarks(self):
         for i, image in enumerate(self.images):
             image = image.convert('RGBA')
-            image.alpha_composite(self.get_watermark, dest=(image.size[0] * self.watermark_x_ratio,
-                                                            image.size[1] * self.watermark_y_ratio))
+            watermark = self.get_watermark().copy()
+            watermark.thumbnail((int(image.size[0] * self.watermark_size_ratio), watermark.size[1]))
+            image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio),
+                                                   int(image.size[1] * self.watermark_y_ratio)))
             self.images[i] = image
-            # need to update thumbnails list
+            thumb = image.copy()
+            thumb.thumbnail((200, 200))
+            thumb = ImageTk.PhotoImage(thumb)
+            self.thumbnails[i] = thumb
 
     def remove_watermark(self):
         self.watermark = None

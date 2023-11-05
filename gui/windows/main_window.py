@@ -75,7 +75,9 @@ class MainWindow:
         self.add_logo_button = ttk.Button(self.button_frame, text='Add Logo', command=self.open_logo_editor)
         self.remove_button = ttk.Button(self.button_frame, text='Remove', command=self.remove_watermark)
         self.remove_button.configure(state='disabled')
-        self.preview_watermarks_button = ttk.Button(mainframe, text='Preview Watermarks')
+        self.preview_watermarks_button = ttk.Button(mainframe,
+                                                    text='Preview Watermarks',
+                                                    command=self.preview_watermarks)
         self.preview_watermarks_button.configure(state='disabled')
         self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
 
@@ -107,6 +109,10 @@ class MainWindow:
         self.remove_button.configure(state='disabled')
         self.preview_watermarks_button.configure(state='disabled')
         self.editing_canvas.show_current_image()
+
+    def preview_watermarks(self):
+        self.image_manager.apply_watermarks()
+        self.thumbnail_view()
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()

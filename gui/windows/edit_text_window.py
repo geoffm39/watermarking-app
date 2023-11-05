@@ -158,10 +158,6 @@ class EditTextWindow(Toplevel):
         self.main_window.preview_watermarks_button.configure(state='normal')
         self.destroy()
 
-        # image = self.image_manager.get_image(self.editing_canvas.current_image_index).convert('RGBA')
-        # image.alpha_composite(self.image_manager.get_watermark(), dest=(watermark_x, watermark_y))
-        # image.show()
-
     def select_font(self, event):
         font_name = self.font.get()
         self.font_path = self.fonts_dict[font_name]
