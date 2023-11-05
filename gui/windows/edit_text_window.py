@@ -143,8 +143,8 @@ class EditTextWindow(Toplevel):
 
         # calculate the x and y locations of the watermark on the original image
         text_x1, text_y1, text_x2, text_y2 = self.editing_canvas.bbox(self.editing_canvas.watermark)
-        watermark_x = int((text_x1 - canvas_x1) * x_ratio)
-        watermark_y = int((text_y1 - canvas_y1) * y_ratio)
+        watermark_x = int((text_x1 + (text_x2 - text_x1) / 2 - canvas_x1) * x_ratio)
+        watermark_y = int((text_y1 + (text_y2 - text_y1) / 2 - canvas_y1) * y_ratio)
 
         # WHAT IF THE WATERMARK IS ROTATED!! THE SIZE RATIO WILL BE DIFFERENT DUE TO CALCULATION ALONG X AXIS
 

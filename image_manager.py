@@ -82,8 +82,8 @@ class ImageManager:
             image = image.convert('RGBA')
             watermark = self.get_watermark().copy()
             watermark.thumbnail((int(image.size[0] * self.watermark_size_ratio), watermark.size[1]))
-            image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio),
-                                                   int(image.size[1] * self.watermark_y_ratio)))
+            image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio - watermark.size[0] / 2),
+                                                   int(image.size[1] * self.watermark_y_ratio - watermark.size[1] / 2)))
             self.images[i] = image
             thumb = image.copy()
             thumb.thumbnail((200, 200))
