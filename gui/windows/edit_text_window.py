@@ -150,7 +150,8 @@ class EditTextWindow(Toplevel):
 
         self.image_manager.set_watermark_ratios(x_ratio=watermark_x / image_x_dim,
                                                 y_ratio=watermark_y / image_y_dim,
-                                                size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim)
+                                                x_size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim,
+                                                y_size_ratio=self.image_manager.get_watermark().size[1] / image_y_dim)
 
         self.main_window.add_text_button.configure(state='disabled')
         self.main_window.add_logo_button.configure(state='disabled')

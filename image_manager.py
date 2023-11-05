@@ -15,7 +15,8 @@ class ImageManager:
         # WATERMARK LOCATION & SIZE VALUES
         self.watermark_x_ratio = None
         self.watermark_y_ratio = None
-        self.watermark_size_ratio = None
+        self.watermark_x_size_ratio = None
+        self.watermark_y_size_ratio = None
 
     def add_images(self, filepaths):
         for filepath in filepaths:
@@ -72,16 +73,18 @@ class ImageManager:
         watermark_photo_image = ImageTk.PhotoImage(watermark_photo_image)
         return watermark_photo_image
 
-    def set_watermark_ratios(self, x_ratio, y_ratio, size_ratio):
+    def set_watermark_ratios(self, x_ratio, y_ratio, x_size_ratio, y_size_ratio):
         self.watermark_x_ratio = x_ratio
         self.watermark_y_ratio = y_ratio
-        self.watermark_size_ratio = size_ratio
+        self.watermark_x_size_ratio = x_size_ratio
+        self.watermark_y_size_ratio = y_size_ratio
 
     def apply_watermarks(self):
         for i, image in enumerate(self.images):
             image = image.convert('RGBA')
             watermark = self.get_watermark().copy()
-            watermark.thumbnail((int(image.size[0] * self.watermark_size_ratio), watermark.size[1]))
+            watermark.thumbnail((int(image.size[0] * self.watermark_x_size_ratio),
+                                 int(image.size[1] * self.watermark_y_size_ratio)))
             image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio - watermark.size[0] / 2),
                                                    int(image.size[1] * self.watermark_y_ratio - watermark.size[1] / 2)))
             self.images[i] = image
