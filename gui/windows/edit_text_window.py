@@ -146,8 +146,6 @@ class EditTextWindow(Toplevel):
         watermark_x = int((text_x1 + (text_x2 - text_x1) / 2 - canvas_x1) * x_ratio)
         watermark_y = int((text_y1 + (text_y2 - text_y1) / 2 - canvas_y1) * y_ratio)
 
-        # WHAT IF THE WATERMARK IS ROTATED!! THE SIZE RATIO WILL BE DIFFERENT DUE TO CALCULATION ALONG X AXIS
-
         self.image_manager.set_watermark_ratios(x_ratio=watermark_x / image_x_dim,
                                                 y_ratio=watermark_y / image_y_dim,
                                                 x_size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim,
