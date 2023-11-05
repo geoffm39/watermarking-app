@@ -54,7 +54,9 @@ class MainWindow:
         self.thumbnail_canvas.configure(yscrollcommand=self.canvas_scrollbar.set)
         self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
         self.clear_files_button = ttk.Button(mainframe, text='Clear Files', command=self.clear_files)
+        self.clear_files_button.configure(state='disabled')
         self.start_editing_button = ttk.Button(mainframe, text='Start Editing', command=self.editing_view)
+        self.start_editing_button.configure(state='disabled')
 
         # editing view widgets
         self.editing_canvas = EditingCanvas(self.canvas_frame,
@@ -87,10 +89,14 @@ class MainWindow:
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.image_manager.add_images(files)
         self.thumbnail_canvas.update_thumbnails()
+        self.start_editing_button.configure(state='normal')
+        self.clear_files_button.configure(state='normal')
 
     def clear_files(self):
         self.image_manager.remove_all_images()
         self.thumbnail_canvas.update_thumbnails()
+        self.start_editing_button.configure(state='disabled')
+        self.clear_files_button.configure(state='disabled')
 
     def open_text_editor(self):
         self.text_editor_window = EditTextWindow(self.root,
