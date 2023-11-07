@@ -17,6 +17,7 @@ class ImageManager:
         self.watermark_y_ratio = None
         self.watermark_x_size_ratio = None
         self.watermark_y_size_ratio = None
+        self.watermark_tile_spacing = 0
 
     def add_images(self, filepaths):
         for filepath in filepaths:
@@ -78,6 +79,20 @@ class ImageManager:
         self.watermark_y_ratio = y_ratio
         self.watermark_x_size_ratio = x_size_ratio
         self.watermark_y_size_ratio = y_size_ratio
+
+    def set_tile_locations(self, image_x, image_y):
+        tile_locations = []
+        watermark_x, watermark_y = self.watermark.size
+        rows = (image_y + watermark_y) // watermark_y
+        columns = (image_x + watermark_x) // watermark_x
+        x_increment = int(watermark_x + self.watermark_tile_spacing)
+        y_increment = int(watermark_y + self.watermark_tile_spacing)
+        for y in range(rows):
+            row = []
+            for x in range(columns):
+                row.append((x * x_increment, y * y_increment))
+            tile_locations.append(row)
+        return tile_locations
 
     def apply_watermarks(self):
         for i, image in enumerate(self.images):

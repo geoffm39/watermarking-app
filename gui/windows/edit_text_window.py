@@ -13,6 +13,7 @@ class EditTextWindow(Toplevel):
         super().__init__(root, **kwargs)
         self.title("Text Editor")
         self.attributes('-topmost', 1)
+        self.protocol('WM_DELETE_WINDOW', self.window_closed)
 
         self.image_manager = image_manager
         self.editing_canvas = editing_canvas
@@ -141,7 +142,7 @@ class EditTextWindow(Toplevel):
         x_ratio = image_x_dim / (canvas_x2 - canvas_x1)
         y_ratio = image_y_dim / (canvas_y2 - canvas_y1)
 
-        # calculate the x and y locations of the watermark on the original image
+        # calculate the centred x and y locations of the watermark on the original image
         text_x1, text_y1, text_x2, text_y2 = self.editing_canvas.bbox(self.editing_canvas.watermark)
         watermark_x = int((text_x1 + (text_x2 - text_x1) / 2 - canvas_x1) * x_ratio)
         watermark_y = int((text_y1 + (text_y2 - text_y1) / 2 - canvas_y1) * y_ratio)
@@ -157,6 +158,13 @@ class EditTextWindow(Toplevel):
         self.main_window.preview_watermarks_button.configure(state='normal')
         self.destroy()
 
+    def toggle_watermark_tiles(self):
+        pass
+        # MOVE THE FUNCITON TO HERE?! JUST NEED SPACING IN IMAGE_MANAGER
+
+    def toggle_tiles(self):
+        pass  # enable and disable the tiled spacing scale
+
     def select_font(self, event):
         font_name = self.font.get()
         self.font_path = self.fonts_dict[font_name]
@@ -167,5 +175,7 @@ class EditTextWindow(Toplevel):
         self.colour = colour[0]
         self.update_watermark()
 
-    def toggle_tiles(self):
-        pass  # enable and disable the tiled spacing scale
+    def window_closed(self):
+        self.image_manager.remove_watermark()
+        self.editing_canvas.show_current_image()
+        self.destroy()
