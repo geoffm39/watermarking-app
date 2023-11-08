@@ -76,7 +76,7 @@ class EditTextWindow(Toplevel):
         self.tiled_checkbutton = ttk.Checkbutton(mainframe,
                                                  text='Tiled',
                                                  variable=self.tiled,
-                                                 command=self.toggle_tiles,
+                                                 command=self.toggle_watermark_tiles,
                                                  onvalue=True,
                                                  offvalue=False)
         self.tiled_spacing = DoubleVar()
@@ -159,8 +159,26 @@ class EditTextWindow(Toplevel):
         self.destroy()
 
     def toggle_watermark_tiles(self):
-        pass
-        # MOVE THE FUNCITON TO HERE?! JUST NEED SPACING IN IMAGE_MANAGER
+        if self.tiled.get():
+            self.text_photo_image = self.image_manager.set_text_watermark(
+                index=self.editing_canvas.current_image_index,
+                text=self.text.get(),
+                font_path=self.font_path,
+                font_size=self.size.get(),
+                rgb_values=self.colour,
+                opacity=self.opacity.get(),
+                rotation=self.rotation.get())
+            canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
+            locations = self.image_manager.set_tile_locations(image_x=canvas_x2-canvas_x1,
+                                                              image_y=canvas_y2-canvas_y1,
+                                                              watermark=self.text_photo_image,
+                                                              start_x=canvas_x1,
+                                                              start_y=canvas_y1)
+            for row in locations:
+                for location in row:
+                    self.editing_canvas.watermark = self.editing_canvas.create_image(int(location[0] + self.text_photo_image.width() / 2),
+                                                                                     int(location[1] + self.text_photo_image.height() / 2),
+                                                                                     image=self.text_photo_image)
 
     def toggle_tiles(self):
         pass  # enable and disable the tiled spacing scale

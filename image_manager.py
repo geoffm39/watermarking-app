@@ -80,9 +80,13 @@ class ImageManager:
         self.watermark_x_size_ratio = x_size_ratio
         self.watermark_y_size_ratio = y_size_ratio
 
-    def set_tile_locations(self, image_x, image_y):
+    def set_tile_locations(self, image_x, image_y, watermark=None, start_x=0, start_y=0):
         tile_locations = []
-        watermark_x, watermark_y = self.watermark.size
+        if watermark:
+            watermark_x = watermark.width()
+            watermark_y = watermark.height()
+        else:
+            watermark_x, watermark_y = self.watermark.size
         rows = (image_y + watermark_y) // watermark_y
         columns = (image_x + watermark_x) // watermark_x
         x_increment = int(watermark_x + self.watermark_tile_spacing)
@@ -90,7 +94,7 @@ class ImageManager:
         for y in range(rows):
             row = []
             for x in range(columns):
-                row.append((x * x_increment, y * y_increment))
+                row.append((x * x_increment + start_x, y * y_increment + start_y))
             tile_locations.append(row)
         return tile_locations
 
