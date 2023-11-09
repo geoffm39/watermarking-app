@@ -98,6 +98,9 @@ class ImageManager:
             tile_locations.append(row)
         return tile_locations
 
+    def set_tile_spacing(self, spacing):
+        self.watermark_tile_spacing = spacing
+
     def apply_watermarks(self):
         for i, image in enumerate(self.images):
             image = image.convert('RGBA')

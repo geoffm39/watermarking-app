@@ -79,12 +79,13 @@ class EditTextWindow(Toplevel):
                                                  command=self.update_watermark_tiles,
                                                  onvalue=True,
                                                  offvalue=False)
-        self.tiled_spacing = DoubleVar()
+        self.tiled_spacing = IntVar(value=0)
         self.tiled_spacing_scale = ttk.Scale(mainframe,
                                              orient=HORIZONTAL,
                                              variable=self.tiled_spacing,
-                                             length=200,
-                                             from_=1.0,
+                                             command=self.update_tile_spacing,
+                                             length=300,
+                                             from_=0,
                                              to=100.0)
 
         self.reset_button = ttk.Button(mainframe, text='Reset Watermark', command=self.reset_watermark)
@@ -190,6 +191,10 @@ class EditTextWindow(Toplevel):
                                                                                          self.text_photo_image.height()
                                                                                          / 2),
                                                                                      image=self.text_photo_image)
+
+    def update_tile_spacing(self, *args):
+        self.image_manager.set_tile_spacing(self.tiled_spacing.get())
+        self.update_canvas()
 
     def select_font(self, event):
         font_name = self.font.get()
