@@ -29,7 +29,7 @@ class EditTextWindow(Toplevel):
         self.title_label = ttk.Label(mainframe, text='Text Properties')
 
         self.text = StringVar(value='Enter Text Here')
-        self.text.trace_add('write', self.update_watermark)
+        self.text.trace_add('write', self.update_canvas)
         self.text_entry = ttk.Entry(mainframe, textvariable=self.text)
 
         self.fonts_dict = get_font_dict()
@@ -45,9 +45,9 @@ class EditTextWindow(Toplevel):
                                     orient=HORIZONTAL,
                                     variable=self.size,
                                     length=300,
-                                    from_=1,
+                                    from_=10,
                                     to=1000,
-                                    command=self.update_watermark)
+                                    command=self.update_canvas)
 
         self.opacity = IntVar(value=128)
         self.opacity_scale = ttk.Scale(mainframe,
@@ -56,7 +56,7 @@ class EditTextWindow(Toplevel):
                                        length=300,
                                        from_=0,
                                        to=255,
-                                       command=self.update_watermark)
+                                       command=self.update_canvas)
 
         self.rotation = IntVar(value=0)
         self.rotation_scale = ttk.Scale(mainframe,
@@ -65,7 +65,7 @@ class EditTextWindow(Toplevel):
                                         length=300,
                                         from_=-180.0,
                                         to=180.0,
-                                        command=self.update_watermark)
+                                        command=self.update_canvas)
 
         self.colour = (255, 255, 255)
         self.colour_button = ttk.Button(mainframe,
@@ -76,7 +76,7 @@ class EditTextWindow(Toplevel):
         self.tiled_checkbutton = ttk.Checkbutton(mainframe,
                                                  text='Tiled',
                                                  variable=self.tiled,
-                                                 command=self.toggle_watermark_tiles,
+                                                 command=self.update_watermark_tiles,
                                                  onvalue=True,
                                                  offvalue=False)
         self.tiled_spacing = DoubleVar()
@@ -101,7 +101,7 @@ class EditTextWindow(Toplevel):
         self.reset_button.grid(column=0, row=9)
 
         self.reset_watermark()
-        self.update_watermark()
+        self.update_canvas()
 
         self.apply_button = ttk.Button(mainframe, text='Apply Watermark', command=self.apply_watermark)
         self.apply_button.grid(column=0, row=10)
@@ -113,7 +113,13 @@ class EditTextWindow(Toplevel):
         self.colour = (255, 255, 255)
         self.text.set('Enter Text Here')
         self.editing_canvas.reset_image_location()
-        self.update_watermark()
+        self.update_canvas()
+
+    def update_canvas(self, *args):
+        if self.tiled.get():
+            self.update_watermark_tiles()
+        else:
+            self.update_watermark()
 
     def update_watermark(self, *args):
         self.text_photo_image = self.image_manager.set_text_watermark(
@@ -158,7 +164,8 @@ class EditTextWindow(Toplevel):
         self.main_window.preview_watermarks_button.configure(state='normal')
         self.destroy()
 
-    def toggle_watermark_tiles(self):
+    def update_watermark_tiles(self):
+        self.editing_canvas.show_current_image()
         if self.tiled.get():
             self.text_photo_image = self.image_manager.set_text_watermark(
                 index=self.editing_canvas.current_image_index,
@@ -176,22 +183,23 @@ class EditTextWindow(Toplevel):
                                                               start_y=canvas_y1)
             for row in locations:
                 for location in row:
-                    self.editing_canvas.watermark = self.editing_canvas.create_image(int(location[0] + self.text_photo_image.width() / 2),
-                                                                                     int(location[1] + self.text_photo_image.height() / 2),
+                    self.editing_canvas.watermark = self.editing_canvas.create_image(int(location[0] +
+                                                                                         self.text_photo_image.width()
+                                                                                         / 2),
+                                                                                     int(location[1] +
+                                                                                         self.text_photo_image.height()
+                                                                                         / 2),
                                                                                      image=self.text_photo_image)
-
-    def toggle_tiles(self):
-        pass  # enable and disable the tiled spacing scale
 
     def select_font(self, event):
         font_name = self.font.get()
         self.font_path = self.fonts_dict[font_name]
-        self.update_watermark()
+        self.update_canvas()
 
     def set_colour(self):
         colour = colorchooser.askcolor(parent=self)
         self.colour = colour[0]
-        self.update_watermark()
+        self.update_canvas()
 
     def window_closed(self):
         self.image_manager.remove_watermark()
