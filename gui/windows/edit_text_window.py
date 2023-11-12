@@ -28,10 +28,12 @@ class EditTextWindow(Toplevel):
 
         self.title_label = ttk.Label(mainframe, text='Text Properties')
 
+        self.text_label = ttk.Label(mainframe, text='Text')
         self.text = StringVar(value='Enter Text Here')
         self.text.trace_add('write', self.update_canvas)
         self.text_entry = ttk.Entry(mainframe, textvariable=self.text)
 
+        self.font_label = ttk.Label(mainframe, text='Font')
         self.fonts_dict = get_font_dict()
         self.font = StringVar(value=get_font_names(self.fonts_dict)[0])
         self.font_path = self.fonts_dict[self.font.get()]
@@ -40,6 +42,7 @@ class EditTextWindow(Toplevel):
         self.font_combobox['values'] = get_font_names(self.fonts_dict)
         self.font_combobox.bind('<<ComboboxSelected>>', self.select_font)
 
+        self.size_label = ttk.Label(mainframe, text='Size')
         self.size = IntVar(value=50)
         self.size_scale = ttk.Scale(mainframe,
                                     orient=HORIZONTAL,
@@ -49,6 +52,7 @@ class EditTextWindow(Toplevel):
                                     to=1000,
                                     command=self.update_canvas)
 
+        self.opacity_label = ttk.Label(mainframe, text='Opacity')
         self.opacity = IntVar(value=128)
         self.opacity_scale = ttk.Scale(mainframe,
                                        orient=HORIZONTAL,
@@ -58,6 +62,7 @@ class EditTextWindow(Toplevel):
                                        to=255,
                                        command=self.update_canvas)
 
+        self.rotation_label = ttk.Label(mainframe, text='Rotation')
         self.rotation = IntVar(value=0)
         self.rotation_scale = ttk.Scale(mainframe,
                                         orient=HORIZONTAL,
@@ -67,6 +72,7 @@ class EditTextWindow(Toplevel):
                                         to=180.0,
                                         command=self.update_canvas)
 
+        self.colour_label = ttk.Label(mainframe, text='Colour')
         self.colour = (255, 255, 255)
         self.colour_button = ttk.Button(mainframe,
                                         text='Colour',
@@ -79,8 +85,10 @@ class EditTextWindow(Toplevel):
                                                  command=self.update_canvas,
                                                  onvalue=True,
                                                  offvalue=False)
+        spacing_frame = ttk.Frame(mainframe)
+        self.spacing_label = ttk.Label(spacing_frame, text='Spacing')
         self.tiled_spacing = IntVar(value=0)
-        self.tiled_spacing_scale = ttk.Scale(mainframe,
+        self.tiled_spacing_scale = ttk.Scale(spacing_frame,
                                              orient=HORIZONTAL,
                                              variable=self.tiled_spacing,
                                              command=self.set_tile_spacing,
@@ -91,22 +99,46 @@ class EditTextWindow(Toplevel):
 
         self.reset_button = ttk.Button(mainframe, text='Reset Watermark', command=self.reset_watermark)
 
-        self.title_label.grid(column=0, row=0)
-        self.text_entry.grid(column=0, row=1)
-        self.font_combobox.grid(column=0, row=2)
-        self.size_scale.grid(column=0, row=3)
-        self.opacity_scale.grid(column=0, row=4)
-        self.rotation_scale.grid(column=0, row=5)
-        self.colour_button.grid(column=0, row=6)
-        self.tiled_checkbutton.grid(column=0, row=7)
-        self.tiled_spacing_scale.grid(column=0, row=8)
-        self.reset_button.grid(column=0, row=9)
+        self.title_label.grid(column=1, row=0)
+        self.s1 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s1.grid(column=0, row=1, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.text_label.grid(column=0, row=2)
+        self.text_entry.grid(column=1, row=2)
+        self.s2 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s2.grid(column=0, row=3, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.font_label.grid(column=0, row=4)
+        self.font_combobox.grid(column=1, row=4)
+        self.s3 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s3.grid(column=0, row=5, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.size_label.grid(column=0, row=6)
+        self.size_scale.grid(column=1, row=6)
+        self.s4 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s4.grid(column=0, row=7, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.opacity_label.grid(column=0, row=8)
+        self.opacity_scale.grid(column=1, row=8)
+        self.s5 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s5.grid(column=0, row=9, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.rotation_label.grid(column=0, row=10)
+        self.rotation_scale.grid(column=1, row=10)
+        self.s6 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s6.grid(column=0, row=11, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.colour_label.grid(column=0, row=12)
+        self.colour_button.grid(column=1, row=12)
+        self.s7 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s7.grid(column=0, row=13, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.tiled_checkbutton.grid(column=0, row=14)
+        spacing_frame.grid(column=1, row=14)
+        self.spacing_label.grid(column=0, row=0)
+        self.tiled_spacing_scale.grid(column=1, row=0)
+        self.s8 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s8.grid(column=0, row=15, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.reset_button.grid(column=0, row=16)
 
         self.reset_watermark()
         self.update_canvas()
 
         self.apply_button = ttk.Button(mainframe, text='Apply Watermark', command=self.apply_watermark)
-        self.apply_button.grid(column=0, row=10)
+        self.apply_button.grid(column=1, row=16)
 
     def reset_watermark(self):
         self.size.set(50)
