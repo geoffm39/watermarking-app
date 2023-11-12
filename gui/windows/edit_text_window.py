@@ -86,7 +86,7 @@ class EditTextWindow(Toplevel):
                                              command=self.set_tile_spacing,
                                              length=300,
                                              from_=0,
-                                             to=100.0)
+                                             to=300.0)
         self.tiled_spacing_scale.configure(state='disabled')
 
         self.reset_button = ttk.Button(mainframe, text='Reset Watermark', command=self.reset_watermark)
