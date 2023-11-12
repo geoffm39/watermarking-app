@@ -76,17 +76,18 @@ class EditTextWindow(Toplevel):
         self.tiled_checkbutton = ttk.Checkbutton(mainframe,
                                                  text='Tiled',
                                                  variable=self.tiled,
-                                                 command=self.update_watermark_tiles,
+                                                 command=self.update_canvas,
                                                  onvalue=True,
                                                  offvalue=False)
         self.tiled_spacing = IntVar(value=0)
         self.tiled_spacing_scale = ttk.Scale(mainframe,
                                              orient=HORIZONTAL,
                                              variable=self.tiled_spacing,
-                                             command=self.update_tile_spacing,
+                                             command=self.set_tile_spacing,
                                              length=300,
                                              from_=0,
                                              to=100.0)
+        self.tiled_spacing_scale.configure(state='disabled')
 
         self.reset_button = ttk.Button(mainframe, text='Reset Watermark', command=self.reset_watermark)
 
@@ -123,6 +124,8 @@ class EditTextWindow(Toplevel):
             self.update_watermark()
 
     def update_watermark(self, *args):
+        self.image_manager.set_tiled_bool(self.tiled.get())
+        self.tiled_spacing_scale.configure(state='disabled')
         self.text_photo_image = self.image_manager.set_text_watermark(
             index=self.editing_canvas.current_image_index,
             text=self.text.get(),
@@ -142,6 +145,38 @@ class EditTextWindow(Toplevel):
         self.editing_canvas.tag_bind(self.editing_canvas.watermark, "<B1-Motion>", self.editing_canvas.on_image_drag)
         self.editing_canvas.update_idletasks()
 
+    def update_watermark_tiles(self):
+        self.image_manager.set_tiled_bool(self.tiled.get())
+        self.tiled_spacing_scale.configure(state='normal')
+        self.editing_canvas.show_current_image()
+        self.text_photo_image = self.image_manager.set_text_watermark(
+            index=self.editing_canvas.current_image_index,
+            text=self.text.get(),
+            font_path=self.font_path,
+            font_size=self.size.get(),
+            rgb_values=self.colour,
+            opacity=self.opacity.get(),
+            rotation=self.rotation.get())
+
+        # set tile locations based on thumbnail size
+        canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
+        locations = self.image_manager.set_tile_locations(image_x=canvas_x2-canvas_x1,
+                                                          image_y=canvas_y2-canvas_y1,
+                                                          watermark=self.text_photo_image,
+                                                          start_x=canvas_x1,
+                                                          start_y=canvas_y1)
+
+        for row in locations:
+            for location in row:
+                self.editing_canvas.watermark = self.editing_canvas.create_image(int(location[0] +
+                                                                                     self.text_photo_image.width()
+                                                                                     / 2),
+                                                                                 int(location[1] +
+                                                                                     self.text_photo_image.height()
+                                                                                     / 2),
+                                                                                 image=self.text_photo_image)
+        self.editing_canvas.update_idletasks()
+
     def apply_watermark(self):
         # calculate the ratio size difference from original image on x and y axes
         canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
@@ -157,7 +192,13 @@ class EditTextWindow(Toplevel):
         self.image_manager.set_watermark_ratios(x_ratio=watermark_x / image_x_dim,
                                                 y_ratio=watermark_y / image_y_dim,
                                                 x_size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim,
-                                                y_size_ratio=self.image_manager.get_watermark().size[1] / image_y_dim)
+                                                y_size_ratio=self.image_manager.get_watermark().size[1] / image_y_dim,
+                                                spacing_ratio=self.tiled_spacing.get() * x_ratio / image_x_dim)
+
+        # unbind the watermark bindings to stop drag and drop after applying
+        self.editing_canvas.tag_unbind(self.editing_canvas.watermark, '<ButtonPress-1>')
+        self.editing_canvas.tag_unbind(self.editing_canvas.watermark, '<ButtonRelease-1>')
+        self.editing_canvas.tag_unbind(self.editing_canvas.watermark, '<B1-Motion>')
 
         self.main_window.add_text_button.configure(state='disabled')
         self.main_window.add_logo_button.configure(state='disabled')
@@ -165,34 +206,7 @@ class EditTextWindow(Toplevel):
         self.main_window.preview_watermarks_button.configure(state='normal')
         self.destroy()
 
-    def update_watermark_tiles(self):
-        self.editing_canvas.show_current_image()
-        if self.tiled.get():
-            self.text_photo_image = self.image_manager.set_text_watermark(
-                index=self.editing_canvas.current_image_index,
-                text=self.text.get(),
-                font_path=self.font_path,
-                font_size=self.size.get(),
-                rgb_values=self.colour,
-                opacity=self.opacity.get(),
-                rotation=self.rotation.get())
-            canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
-            locations = self.image_manager.set_tile_locations(image_x=canvas_x2-canvas_x1,
-                                                              image_y=canvas_y2-canvas_y1,
-                                                              watermark=self.text_photo_image,
-                                                              start_x=canvas_x1,
-                                                              start_y=canvas_y1)
-            for row in locations:
-                for location in row:
-                    self.editing_canvas.watermark = self.editing_canvas.create_image(int(location[0] +
-                                                                                         self.text_photo_image.width()
-                                                                                         / 2),
-                                                                                     int(location[1] +
-                                                                                         self.text_photo_image.height()
-                                                                                         / 2),
-                                                                                     image=self.text_photo_image)
-
-    def update_tile_spacing(self, *args):
+    def set_tile_spacing(self, *args):
         self.image_manager.set_tile_spacing(self.tiled_spacing.get())
         self.update_canvas()
 

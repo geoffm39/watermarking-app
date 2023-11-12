@@ -12,12 +12,14 @@ class ImageManager:
         self.current_editing_photo_image = None
         self.watermark = None
 
-        # WATERMARK LOCATION & SIZE VALUES
+        # WATERMARK VARIABLES
         self.watermark_x_ratio = None
         self.watermark_y_ratio = None
         self.watermark_x_size_ratio = None
         self.watermark_y_size_ratio = None
         self.watermark_tile_spacing = 0
+        self.watermark_spacing_ratio = None
+        self.is_tiled = False
 
     def add_images(self, filepaths):
         for filepath in filepaths:
@@ -40,15 +42,15 @@ class ImageManager:
     def get_image(self, index):
         return self.images[index]
 
+    def get_watermark(self):
+        return self.watermark
+
     def set_current_image(self, index: int):
         image = self.images[index]
         editing_img = image.copy()
         editing_img.thumbnail((1080, 654))
         self.current_editing_image = editing_img
         self.current_editing_photo_image = ImageTk.PhotoImage(editing_img)
-
-    def get_watermark(self):
-        return self.watermark
 
     def set_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
         watermark = Image.new('RGBA',
@@ -74,11 +76,12 @@ class ImageManager:
         watermark_photo_image = ImageTk.PhotoImage(watermark_photo_image)
         return watermark_photo_image
 
-    def set_watermark_ratios(self, x_ratio, y_ratio, x_size_ratio, y_size_ratio):
+    def set_watermark_ratios(self, x_ratio, y_ratio, x_size_ratio, y_size_ratio, spacing_ratio):
         self.watermark_x_ratio = x_ratio
         self.watermark_y_ratio = y_ratio
         self.watermark_x_size_ratio = x_size_ratio
         self.watermark_y_size_ratio = y_size_ratio
+        self.watermark_spacing_ratio = spacing_ratio
 
     def set_tile_locations(self, image_x, image_y, watermark=None, start_x=0, start_y=0):
         tile_locations = []
@@ -98,6 +101,9 @@ class ImageManager:
             tile_locations.append(row)
         return tile_locations
 
+    def set_tiled_bool(self, is_tiled):
+        self.is_tiled = is_tiled
+
     def set_tile_spacing(self, spacing):
         self.watermark_tile_spacing = spacing
 
@@ -107,8 +113,18 @@ class ImageManager:
             watermark = self.get_watermark().copy()
             watermark.thumbnail((int(image.size[0] * self.watermark_x_size_ratio),
                                  int(image.size[1] * self.watermark_y_size_ratio)))
-            image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio - watermark.size[0] / 2),
-                                                   int(image.size[1] * self.watermark_y_ratio - watermark.size[1] / 2)))
+            if self.is_tiled:
+                self.set_tile_spacing(int(image.size[0] * self.watermark_spacing_ratio))
+                locations = self.set_tile_locations(image_x=image.size[0], image_y=image.size[1])
+                for row in locations:
+                    for location in row:
+                        image.alpha_composite(watermark, dest=(location[0], location[1]))
+
+            else:
+                image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio
+                                                           - watermark.size[0] / 2),
+                                                       int(image.size[1] * self.watermark_y_ratio
+                                                           - watermark.size[1] / 2)))
             self.images[i] = image
             thumb = image.copy()
             thumb.thumbnail((200, 200))
