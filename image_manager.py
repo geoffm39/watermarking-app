@@ -11,6 +11,7 @@ class ImageManager:
         self.current_editing_image = None
         self.current_editing_photo_image = None
         self.watermark = None
+        self.logo_image = None
 
         # WATERMARK VARIABLES
         self.watermark_x_ratio = None
@@ -51,6 +52,25 @@ class ImageManager:
         editing_img.thumbnail((1080, 654))
         self.current_editing_image = editing_img
         self.current_editing_photo_image = ImageTk.PhotoImage(editing_img)
+
+    def set_logo_image(self, filepath):
+        with Image.open(filepath) as image:
+            logo = image.convert('RGBA')
+        width, height = logo.size
+
+        # create a mask that identifies the background pixels
+        background_mask = Image.new('L', (width, height), 0)
+
+        # iterate through each pixel in the image and set mask pixel to 255 if not white
+        for x in range(width):
+            for y in range(height):
+                pixel = logo.getpixel((x, y))
+                if pixel[:3] != (255, 255, 255):
+                    background_mask.putpixel((x, y), 255)
+
+        # apply mask to image
+        logo.putalpha(background_mask)
+        self.logo_image = logo
 
     def set_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
         watermark = Image.new('RGBA',
