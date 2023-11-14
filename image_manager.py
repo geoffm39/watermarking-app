@@ -76,6 +76,9 @@ class ImageManager:
         watermark_photo_image = ImageTk.PhotoImage(watermark_photo_image)
         return watermark_photo_image
 
+    def set_logo_watermark(self):
+        pass
+
     def set_watermark_ratios(self, x_ratio, y_ratio, x_size_ratio, y_size_ratio, spacing_ratio):
         self.watermark_x_ratio = x_ratio
         self.watermark_y_ratio = y_ratio

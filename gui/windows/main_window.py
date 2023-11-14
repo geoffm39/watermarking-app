@@ -106,7 +106,9 @@ class MainWindow:
 
     def open_logo_editor(self):
         self.logo_editor_window = EditLogoWindow(self.root,
-                                                 image_manager=self.image_manager)
+                                                 image_manager=self.image_manager,
+                                                 editing_canvas=self.editing_canvas,
+                                                 main_window=self)
 
     def remove_watermark(self):
         self.image_manager.remove_watermark()
