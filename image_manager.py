@@ -72,6 +72,10 @@ class ImageManager:
         logo.putalpha(background_mask)
         self.logo_image = logo
 
+    def set_logo_watermark(self, size, opacity, rotation):
+        watermark = self.logo_image.copy()
+        watermark.thumbnail((size, 654))
+
     def set_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
         watermark = Image.new('RGBA',
                               self.get_image(index).size,
@@ -95,9 +99,6 @@ class ImageManager:
         watermark_photo_image = photo_image.crop(bbox)
         watermark_photo_image = ImageTk.PhotoImage(watermark_photo_image)
         return watermark_photo_image
-
-    def set_logo_watermark(self):
-        pass
 
     def set_watermark_ratios(self, x_ratio, y_ratio, x_size_ratio, y_size_ratio, spacing_ratio):
         self.watermark_x_ratio = x_ratio

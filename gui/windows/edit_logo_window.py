@@ -36,7 +36,7 @@ class EditLogoWindow(Toplevel):
                                     variable=self.size,
                                     length=300,
                                     from_=10,
-                                    to=1000,
+                                    to=1080,
                                     command=self.update_canvas)
 
         self.opacity_label = ttk.Label(mainframe, text='Opacity')
