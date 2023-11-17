@@ -12,6 +12,7 @@ class ImageManager:
         self.current_editing_photo_image = None
         self.watermark = None
         self.logo_image = None
+        self.logo_bg_mask = None
 
         # WATERMARK VARIABLES
         self.watermark_x_ratio = None
@@ -59,28 +60,38 @@ class ImageManager:
         width, height = logo.size
 
         # create a mask that identifies the background pixels
-        logo_bg_mask = Image.new('L', (width, height), 0)
+        self.logo_bg_mask = Image.new('L', (width, height), 0)
 
         # iterate through each pixel in the image and set mask pixel to 255 if not white
         for x in range(width):
             for y in range(height):
                 pixel = logo.getpixel((x, y))
                 if pixel[:3] != (255, 255, 255):
-                    logo_bg_mask.putpixel((x, y), 255)
+                    self.logo_bg_mask.putpixel((x, y), 255)
 
         # apply mask to image
-        logo.putalpha(logo_bg_mask)
+        logo.putalpha(self.logo_bg_mask)
         self.logo_image = logo
-        self.logo_image.show()
 
     def set_logo_watermark(self, size_ratio, opacity, rotation):
         watermark = self.logo_image.copy()
-        watermark.putalpha(opacity)
         watermark = watermark.rotate(rotation, expand=1, fillcolor=(255, 255, 255, 0))
+        mask = self.logo_bg_mask.copy()
+        mask = mask.rotate(rotation, expand=1, fillcolor=0)
         watermark.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
                              int(self.current_editing_image.size[1] * size_ratio)))
-        self.watermark = watermark
+        mask.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
+                        int(self.current_editing_image.size[1] * size_ratio)))
+        mask = mask.point(lambda p: opacity if p == 255 else 0)
+        watermark.putalpha(mask)
+        alpha_channel = watermark.getchannel('A')
+        bbox = alpha_channel.getbbox()
+        self.watermark = watermark.crop(bbox)
         photo_image = watermark.copy()
+        photo_image.thumbnail((1080, 654))
+        alpha_channel = photo_image.getchannel('A')
+        bbox = alpha_channel.getbbox()
+        photo_image = photo_image.crop(bbox)
         photo_image = ImageTk.PhotoImage(photo_image)
         return photo_image
 

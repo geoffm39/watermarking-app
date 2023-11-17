@@ -106,11 +106,12 @@ class MainWindow:
 
     def open_logo_editor(self):
         file = filedialog.askopenfilename(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
-        self.image_manager.set_logo_image(file)
-        self.logo_editor_window = EditLogoWindow(self.root,
-                                                 image_manager=self.image_manager,
-                                                 editing_canvas=self.editing_canvas,
-                                                 main_window=self)
+        if file:
+            self.image_manager.set_logo_image(file)
+            self.logo_editor_window = EditLogoWindow(self.root,
+                                                     image_manager=self.image_manager,
+                                                     editing_canvas=self.editing_canvas,
+                                                     main_window=self)
 
     def remove_watermark(self):
         self.image_manager.remove_watermark()

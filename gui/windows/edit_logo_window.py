@@ -30,13 +30,13 @@ class EditLogoWindow(Toplevel):
         self.title_label = ttk.Label(mainframe, text='Logo Properties', anchor='center')
 
         self.size_label = ttk.Label(mainframe, text='Size')
-        self.size = IntVar(value=50)
+        self.size = DoubleVar(value=0.2)
         self.size_scale = ttk.Scale(mainframe,
                                     orient=HORIZONTAL,
                                     variable=self.size,
                                     length=300,
-                                    from_=10,
-                                    to=1080,
+                                    from_=0.1,
+                                    to=1,
                                     command=self.update_canvas)
 
         self.opacity_label = ttk.Label(mainframe, text='Opacity')
