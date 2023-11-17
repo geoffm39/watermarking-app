@@ -59,28 +59,28 @@ class ImageManager:
         width, height = logo.size
 
         # create a mask that identifies the background pixels
-        background_mask = Image.new('L', (width, height), 0)
+        logo_bg_mask = Image.new('L', (width, height), 0)
 
         # iterate through each pixel in the image and set mask pixel to 255 if not white
         for x in range(width):
             for y in range(height):
                 pixel = logo.getpixel((x, y))
                 if pixel[:3] != (255, 255, 255):
-                    background_mask.putpixel((x, y), 255)
+                    logo_bg_mask.putpixel((x, y), 255)
 
         # apply mask to image
-        logo.putalpha(background_mask)
+        logo.putalpha(logo_bg_mask)
         self.logo_image = logo
+        self.logo_image.show()
 
     def set_logo_watermark(self, size_ratio, opacity, rotation):
         watermark = self.logo_image.copy()
-        watermark = watermark.rotate(rotation)
         watermark.putalpha(opacity)
+        watermark = watermark.rotate(rotation, expand=1, fillcolor=(255, 255, 255, 0))
         watermark.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
                              int(self.current_editing_image.size[1] * size_ratio)))
         self.watermark = watermark
         photo_image = watermark.copy()
-        photo_image.thumbnail((1080, 654))
         photo_image = ImageTk.PhotoImage(photo_image)
         return photo_image
 
