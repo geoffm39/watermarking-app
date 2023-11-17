@@ -126,7 +126,9 @@ class EditLogoWindow(Toplevel):
     def update_watermark(self, *args):
         self.image_manager.set_tiled_bool(self.tiled.get())
         self.tiled_spacing_scale.configure(state='disabled')
-        self.logo_photo_image = self.image_manager.set_logo_watermark()
+        self.logo_photo_image = self.image_manager.set_logo_watermark(size_ratio=self.size.get(),
+                                                                      opacity=self.opacity.get(),
+                                                                      rotation=self.rotation.get())
         self.editing_canvas.watermark = self.editing_canvas.create_image(self.editing_canvas.last_x,
                                                                          self.editing_canvas.last_y,
                                                                          image=self.logo_photo_image)

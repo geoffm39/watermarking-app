@@ -72,9 +72,17 @@ class ImageManager:
         logo.putalpha(background_mask)
         self.logo_image = logo
 
-    def set_logo_watermark(self, size, opacity, rotation):
+    def set_logo_watermark(self, size_ratio, opacity, rotation):
         watermark = self.logo_image.copy()
-        watermark.thumbnail((size, 654))
+        watermark = watermark.rotate(rotation)
+        watermark.putalpha(opacity)
+        watermark.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
+                             int(self.current_editing_image.size[1] * size_ratio)))
+        self.watermark = watermark
+        photo_image = watermark.copy()
+        photo_image.thumbnail((1080, 654))
+        photo_image = ImageTk.PhotoImage(photo_image)
+        return photo_image
 
     def set_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
         watermark = Image.new('RGBA',
