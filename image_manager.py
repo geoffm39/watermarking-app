@@ -13,6 +13,7 @@ class ImageManager:
         self.watermark = None
         self.logo_image = None
         self.logo_bg_mask = None
+        self.logo_altered = None
 
         # WATERMARK VARIABLES
         self.watermark_x_ratio = None
@@ -69,12 +70,19 @@ class ImageManager:
                 if pixel[:3] != (255, 255, 255):
                     self.logo_bg_mask.putpixel((x, y), 255)
 
-        # apply mask to image
-        logo.putalpha(self.logo_bg_mask)
         self.logo_image = logo
+        self.logo_altered = self.logo_image.copy()
 
-    def set_logo_watermark(self, size_ratio, opacity, rotation):
-        watermark = self.logo_image.copy()
+    #     # apply mask to image
+    #     logo.putalpha(self.logo_bg_mask)
+    #     self.logo_image = logo
+    #
+    # def set_logo_background(self, background):
+    #     if background:
+    #         self.logo_image
+
+    def set_logo_watermark(self, size_ratio, opacity, rotation, background, colour):
+        watermark = self.logo_altered.copy()
         watermark = watermark.rotate(rotation, expand=1, fillcolor=(255, 255, 255, 0))
         mask = self.logo_bg_mask.copy()
         mask = mask.rotate(rotation, expand=1, fillcolor=0)
@@ -82,7 +90,11 @@ class ImageManager:
                              int(self.current_editing_image.size[1] * size_ratio)))
         mask.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
                         int(self.current_editing_image.size[1] * size_ratio)))
-        mask = mask.point(lambda p: opacity if p == 255 else 0)
+        # NEED TO FIX ROTATION OPACITY BACKGROUND!! SAME AS LAST TIME
+        if background:
+            mask = mask.point(lambda p: opacity)
+        else:
+            mask = mask.point(lambda p: opacity if p == 255 else 0)
         watermark.putalpha(mask)
         alpha_channel = watermark.getchannel('A')
         bbox = alpha_channel.getbbox()

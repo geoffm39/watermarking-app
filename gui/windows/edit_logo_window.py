@@ -30,12 +30,12 @@ class EditLogoWindow(Toplevel):
         self.title_label = ttk.Label(mainframe, text='Logo Properties', anchor='center')
 
         self.size_label = ttk.Label(mainframe, text='Size')
-        self.size = DoubleVar(value=0.2)
+        self.size = DoubleVar(value=.2)
         self.size_scale = ttk.Scale(mainframe,
                                     orient=HORIZONTAL,
                                     variable=self.size,
                                     length=300,
-                                    from_=0.1,
+                                    from_=0.05,
                                     to=1,
                                     command=self.update_canvas)
 
@@ -58,6 +58,21 @@ class EditLogoWindow(Toplevel):
                                         from_=-180.0,
                                         to=180.0,
                                         command=self.update_canvas)
+
+        self.colour_label = ttk.Label(mainframe, text='Colour')
+        self.colour = (255, 255, 255)
+        colour_frame = ttk.Frame(mainframe)
+        self.background = BooleanVar(value=True)
+        self.background_checkbutton = ttk.Checkbutton(colour_frame,
+                                                      text='Background',
+                                                      variable=self.background,
+                                                      command=self.update_canvas,
+                                                      onvalue=True,
+                                                      offvalue=False)
+        self.colour = None
+        self.colour_button = ttk.Button(colour_frame,
+                                        text='Colour',
+                                        command=self.set_colour)
 
         self.tiled = BooleanVar()
         self.tiled_checkbutton = ttk.Checkbutton(mainframe,
@@ -84,26 +99,32 @@ class EditLogoWindow(Toplevel):
         self.title_label.grid(column=0, row=0, columnspan=2, sticky=(W, E), pady=(5, 0))
         self.s1 = ttk.Separator(mainframe, orient=HORIZONTAL)
         self.s1.grid(column=0, row=1, columnspan=2, sticky=(W, E), padx=10, pady=5)
-        self.size_label.grid(column=0, row=6, sticky=W, padx=10)
-        self.size_scale.grid(column=1, row=6, padx=(0, 10))
+        self.size_label.grid(column=0, row=2, sticky=W, padx=10)
+        self.size_scale.grid(column=1, row=2, padx=(0, 10))
         self.s2 = ttk.Separator(mainframe, orient=HORIZONTAL)
-        self.s2.grid(column=0, row=7, columnspan=2, sticky=(W, E), padx=10, pady=5)
-        self.opacity_label.grid(column=0, row=8, sticky=W, padx=10)
-        self.opacity_scale.grid(column=1, row=8, padx=(0, 10))
+        self.s2.grid(column=0, row=3, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.opacity_label.grid(column=0, row=4, sticky=W, padx=10)
+        self.opacity_scale.grid(column=1, row=4, padx=(0, 10))
         self.s3 = ttk.Separator(mainframe, orient=HORIZONTAL)
-        self.s3.grid(column=0, row=9, columnspan=2, sticky=(W, E), padx=10, pady=5)
-        self.rotation_label.grid(column=0, row=10, sticky=W, padx=10)
-        self.rotation_scale.grid(column=1, row=10, padx=(0, 10))
+        self.s3.grid(column=0, row=5, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.rotation_label.grid(column=0, row=6, sticky=W, padx=10)
+        self.rotation_scale.grid(column=1, row=6, padx=(0, 10))
         self.s4 = ttk.Separator(mainframe, orient=HORIZONTAL)
-        self.s4.grid(column=0, row=11, columnspan=2, sticky=(W, E), padx=10, pady=5)
-        self.tiled_checkbutton.grid(column=0, row=14, sticky=W, padx=10)
-        spacing_frame.grid(column=1, row=14)
+        self.s4.grid(column=0, row=7, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.colour_label.grid(column=0, row=8, sticky=W, padx=10)
+        colour_frame.grid(column=1, row=8)
+        self.background_checkbutton.grid(column=1, row=0)
+        self.colour_button.grid(column=0, row=0)
+        self.s5 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s5.grid(column=0, row=9, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.tiled_checkbutton.grid(column=0, row=10, sticky=W, padx=10)
+        spacing_frame.grid(column=1, row=10)
         self.spacing_label.grid(column=0, row=0, sticky=W)
         self.tiled_spacing_scale.grid(column=1, row=0, padx=10)
-        self.s5 = ttk.Separator(mainframe, orient=HORIZONTAL)
-        self.s5.grid(column=0, row=15, columnspan=2, sticky=(W, E), padx=10, pady=5)
-        self.reset_button.grid(column=0, row=16, sticky=W, padx=(10, 0), pady=(0, 5))
-        self.apply_button.grid(column=1, row=16, sticky=E, padx=(0, 10), pady=(0, 5))
+        self.s6 = ttk.Separator(mainframe, orient=HORIZONTAL)
+        self.s6.grid(column=0, row=11, columnspan=2, sticky=(W, E), padx=10, pady=5)
+        self.reset_button.grid(column=0, row=12, sticky=W, padx=(10, 0), pady=(0, 5))
+        self.apply_button.grid(column=1, row=12, sticky=E, padx=(0, 10), pady=(0, 5))
 
         self.reset_watermark()
         self.update_canvas()
@@ -128,7 +149,9 @@ class EditLogoWindow(Toplevel):
         self.tiled_spacing_scale.configure(state='disabled')
         self.logo_photo_image = self.image_manager.set_logo_watermark(size_ratio=self.size.get(),
                                                                       opacity=self.opacity.get(),
-                                                                      rotation=self.rotation.get())
+                                                                      rotation=self.rotation.get(),
+                                                                      background=self.background.get(),
+                                                                      colour=self.colour)
         self.editing_canvas.watermark = self.editing_canvas.create_image(self.editing_canvas.last_x,
                                                                          self.editing_canvas.last_y,
                                                                          image=self.logo_photo_image)
@@ -193,6 +216,11 @@ class EditLogoWindow(Toplevel):
         self.main_window.remove_button.configure(state='normal')
         self.main_window.preview_watermarks_button.configure(state='normal')
         self.destroy()
+
+    def set_colour(self):
+        colour = colorchooser.askcolor(parent=self)
+        self.colour = colour[0]
+        self.update_canvas()
 
     def set_tile_spacing(self, *args):
         self.image_manager.set_tile_spacing(self.tiled_spacing.get())
