@@ -167,7 +167,11 @@ class EditLogoWindow(Toplevel):
         self.image_manager.set_tiled_bool(self.tiled.get())
         self.tiled_spacing_scale.configure(state='normal')
         self.editing_canvas.show_current_image()
-        self.logo_photo_image = self.image_manager.set_logo_watermark()
+        self.logo_photo_image = self.image_manager.set_logo_watermark(size_ratio=self.size.get(),
+                                                                      opacity=self.opacity.get(),
+                                                                      rotation=self.rotation.get(),
+                                                                      background=self.background.get(),
+                                                                      colour=self.colour)
 
         # set tile locations based on thumbnail size
         canvas_x1, canvas_y1, canvas_x2, canvas_y2 = self.editing_canvas.bbox(self.editing_canvas.canvas_image)
