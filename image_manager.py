@@ -168,6 +168,7 @@ class ImageManager:
             if self.is_logo:
                 watermark = watermark.resize((int(image.size[0] * self.watermark_x_size_ratio),
                                               int(image.size[1] * self.watermark_y_size_ratio)))
+                self.watermark = watermark
             else:
                 watermark.thumbnail((int(image.size[0] * self.watermark_x_size_ratio),
                                      int(image.size[1] * self.watermark_y_size_ratio)))
