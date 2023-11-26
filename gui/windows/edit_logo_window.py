@@ -30,13 +30,13 @@ class EditLogoWindow(Toplevel):
         self.title_label = ttk.Label(mainframe, text='Logo Properties', anchor='center')
 
         self.size_label = ttk.Label(mainframe, text='Size')
-        self.size = DoubleVar(value=.2)
+        self.size = DoubleVar(value=1)
         self.size_scale = ttk.Scale(mainframe,
                                     orient=HORIZONTAL,
                                     variable=self.size,
                                     length=300,
                                     from_=0.05,
-                                    to=1,
+                                    to=10,
                                     command=self.update_canvas)
 
         self.opacity_label = ttk.Label(mainframe, text='Opacity')
@@ -130,7 +130,7 @@ class EditLogoWindow(Toplevel):
         self.update_canvas()
 
     def reset_watermark(self):
-        self.size.set(50)
+        self.size.set(1)
         self.opacity.set(128)
         self.rotation.set(0)
         self.tiled.set(False)
@@ -206,8 +206,8 @@ class EditLogoWindow(Toplevel):
 
         self.image_manager.set_watermark_ratios(x_ratio=watermark_x / image_x_dim,
                                                 y_ratio=watermark_y / image_y_dim,
-                                                x_size_ratio=self.image_manager.get_watermark().size[0] / image_x_dim,
-                                                y_size_ratio=self.image_manager.get_watermark().size[1] / image_y_dim,
+                                                x_size_ratio=(text_x2 - text_x1) / (canvas_x2 - canvas_x1),
+                                                y_size_ratio=(text_y2 - text_y1) / (canvas_y2 - canvas_y1),
                                                 spacing_ratio=self.tiled_spacing.get() * x_ratio / image_x_dim)
 
         # unbind the watermark bindings to stop drag and drop after applying

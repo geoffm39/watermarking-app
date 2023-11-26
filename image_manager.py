@@ -22,6 +22,7 @@ class ImageManager:
         self.watermark_tile_spacing = 0
         self.watermark_spacing_ratio = None
         self.is_tiled = False
+        self.is_logo = False
 
     def add_images(self, filepaths):
         for filepath in filepaths:
@@ -86,14 +87,17 @@ class ImageManager:
             mask = mask.point(lambda p: opacity if p == 255 else 0)
         watermark = watermark.rotate(rotation, expand=1, fillcolor=(255, 255, 255, 0))
         mask = mask.rotate(rotation, expand=1, fillcolor=0)
-        watermark.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
-                             int(self.current_editing_image.size[1] * size_ratio)))
-        mask.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
-                        int(self.current_editing_image.size[1] * size_ratio)))
+        # watermark.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
+        #                      int(self.current_editing_image.size[1] * size_ratio)))
+        # mask.thumbnail((int(self.current_editing_image.size[0] * size_ratio),
+        #                 int(self.current_editing_image.size[1] * size_ratio)))
         watermark.putalpha(mask)
         alpha_channel = watermark.getchannel('A')
         bbox = alpha_channel.getbbox()
-        self.watermark = watermark.crop(bbox)
+        watermark = watermark.crop(bbox)
+        watermark = watermark.resize((int(watermark.width * size_ratio), int(watermark.height * size_ratio)))
+        self.watermark = watermark
+        self.is_logo = True
         photo_image = watermark.copy()
         photo_image.thumbnail((1080, 654))
         alpha_channel = photo_image.getchannel('A')
@@ -161,8 +165,12 @@ class ImageManager:
         for i, image in enumerate(self.images):
             image = image.convert('RGBA')
             watermark = self.get_watermark().copy()
-            watermark.thumbnail((int(image.size[0] * self.watermark_x_size_ratio),
-                                 int(image.size[1] * self.watermark_y_size_ratio)))
+            if self.is_logo:
+                watermark = watermark.resize((int(image.size[0] * self.watermark_x_size_ratio),
+                                              int(image.size[1] * self.watermark_y_size_ratio)))
+            else:
+                watermark.thumbnail((int(image.size[0] * self.watermark_x_size_ratio),
+                                     int(image.size[1] * self.watermark_y_size_ratio)))
             if self.is_tiled:
                 self.set_tile_spacing(int(image.size[0] * self.watermark_spacing_ratio))
                 locations = self.set_tile_locations(image_x=image.size[0], image_y=image.size[1])
