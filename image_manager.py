@@ -157,20 +157,24 @@ class ImageManager:
 
     def apply_watermarks(self):
         watermark = self.get_watermark().copy()
+        watermark_x, watermark_y = watermark.size
         for i, image in enumerate(self.images):
             image = image.convert('RGBA')
 
+            # set the new watermark width and height max values
             max_x = int(image.size[0] * self.watermark_x_size_ratio)
             max_y = int(image.size[1] * self.watermark_y_size_ratio)
-            watermark_x, watermark_y = watermark.size
 
+            # calculate the width and height ratio difference and take the lowest value
             width_ratio = max_x / watermark_x
             height_ratio = max_y / watermark_y
             ratio = min(width_ratio, height_ratio)
 
+            # set the new width and height using the ratio
             new_width = int(watermark_x * ratio)
             new_height = int(watermark_y * ratio)
 
+            # call resize, passing in the new width and height
             watermark = watermark.resize((new_width, new_height))
 
             if self.is_tiled:
