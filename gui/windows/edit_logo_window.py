@@ -5,7 +5,6 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 from gui.custom_widgets.editing_canvas import EditingCanvas
 from image_manager import ImageManager
-from font_manager import get_font_dict, get_font_names
 
 
 class EditLogoWindow(Toplevel):
