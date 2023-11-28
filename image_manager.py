@@ -137,13 +137,13 @@ class ImageManager:
         self.watermark_y_size_ratio = y_size_ratio
         self.watermark_spacing_ratio = spacing_ratio
 
-    def set_tile_locations(self, image_x, image_y, watermark=None, start_x=0, start_y=0):
+    def set_tile_locations(self, image_x, image_y, watermark, start_x=0, start_y=0):
         tile_locations = []
-        if watermark:
+        try:
             watermark_x = watermark.width()
             watermark_y = watermark.height()
-        else:
-            watermark_x, watermark_y = self.watermark.size
+        except TypeError:
+            watermark_x, watermark_y = watermark.size
         rows = (image_y + watermark_y) // watermark_y
         columns = (image_x + watermark_x) // watermark_x
         x_increment = int(watermark_x + self.watermark_tile_spacing)
@@ -181,7 +181,6 @@ class ImageManager:
 
             if self.is_tiled:
                 self.set_tile_spacing(int(image.size[0] * self.watermark_spacing_ratio))
-                # NEED TO FIX WATERMARK SIZE  TYPE ERROR ISSUE
                 locations = self.set_tile_locations(image_x=image.size[0], image_y=image.size[1], watermark=watermark)
                 for row in locations:
                     for location in row:
