@@ -100,18 +100,29 @@ class ImageManager:
         photo_image = ImageTk.PhotoImage(photo_image)
         return photo_image
 
-    def set_text_watermark(self, index, text, font_path, font_size, rgb_values, opacity, rotation):
+    def set_text_watermark(self, index, text, font_path, font_size, rgb_values, outline, opacity, rotation):
         watermark = Image.new('RGBA',
                               self.get_image(index).size,
                               (255, 255, 255, 0))
         font = ImageFont.truetype(font_path, font_size)
         draw = ImageDraw.Draw(watermark)
         r, g, b = rgb_values
-        draw.text((int(watermark.size[0] / 2), int(watermark.size[1] / 2)),
-                  text=text,
-                  font=font,
-                  fill=(r, g, b, opacity),
-                  anchor='mm')
+
+        x = int(watermark.size[0] / 2)
+        y = int(watermark.size[1] / 2)
+        if outline:
+            # SHOULD I ADD AN OUTLINE SIZE OPTION?????
+            outline_width = 1  # Change this to the desired outline width
+            for i in range(-outline_width, outline_width + 1):
+                for j in range(-outline_width, outline_width + 1):
+                    draw.text((x + i, y + j), text, font=font, fill=(0, 0, 0, opacity), anchor='mm')
+            draw.text((x, y), text, font=font, fill=(r, g, b, opacity), anchor='mm')
+        else:
+            draw.text((x, y),
+                      text=text,
+                      font=font,
+                      fill=(r, g, b, opacity),
+                      anchor='mm')
         watermark = watermark.rotate(rotation)
         alpha_channel = watermark.getchannel('A')
         bbox = alpha_channel.getbbox()

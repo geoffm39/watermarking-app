@@ -76,8 +76,16 @@ class EditTextWindow(Toplevel):
                                         command=self.update_canvas)
 
         self.colour_label = ttk.Label(mainframe, text='Colour')
+        colour_frame = ttk.Frame(mainframe)
+        self.outline = BooleanVar(value=True)
+        self.outline_checkbutton = ttk.Checkbutton(colour_frame,
+                                                   text='Outline',
+                                                   variable=self.outline,
+                                                   command=self.update_canvas,
+                                                   onvalue=True,
+                                                   offvalue=False)
         self.colour = (255, 255, 255)
-        self.colour_button = ttk.Button(mainframe,
+        self.colour_button = ttk.Button(colour_frame,
                                         text='Colour',
                                         command=self.set_colour)
 
@@ -127,7 +135,9 @@ class EditTextWindow(Toplevel):
         self.s6 = ttk.Separator(mainframe, orient=HORIZONTAL)
         self.s6.grid(column=0, row=11, columnspan=2, sticky=(W, E), padx=10, pady=5)
         self.colour_label.grid(column=0, row=12, sticky=W, padx=10)
-        self.colour_button.grid(column=1, row=12)
+        colour_frame.grid(column=1, row=12)
+        self.colour_button.grid(column=0, row=0, padx=(0, 20))
+        self.outline_checkbutton.grid(column=1, row=0, padx=(20, 0))
         self.s7 = ttk.Separator(mainframe, orient=HORIZONTAL)
         self.s7.grid(column=0, row=13, columnspan=2, sticky=(W, E), padx=10, pady=5)
         self.tiled_checkbutton.grid(column=0, row=14, sticky=W, padx=10)
@@ -169,6 +179,7 @@ class EditTextWindow(Toplevel):
             font_path=self.font_path,
             font_size=self.size.get(),
             rgb_values=self.colour,
+            outline=self.outline.get(),
             opacity=self.opacity.get(),
             rotation=self.rotation.get())
         self.editing_canvas.watermark = self.editing_canvas.create_image(self.editing_canvas.last_x,
@@ -192,6 +203,7 @@ class EditTextWindow(Toplevel):
             font_path=self.font_path,
             font_size=self.size.get(),
             rgb_values=self.colour,
+            outline=self.outline.get(),
             opacity=self.opacity.get(),
             rotation=self.rotation.get())
 
