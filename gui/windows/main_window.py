@@ -123,7 +123,12 @@ class MainWindow:
 
     def preview_watermarks(self):
         self.image_manager.apply_watermarks()
-        self.thumbnail_view()
+        self.preview_view()
+
+    def preview_watermarked_image(self, image_index):
+        # NOW SORT OUT THE EDITING VEIW FOR PREVIEW MODE!!
+        self.editing_view()
+        self.editing_canvas.set_image_index(image_index)
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()
@@ -170,3 +175,28 @@ class MainWindow:
 
         self.editing_canvas.show_current_image()
 
+    def preview_view(self):
+        self.editing_canvas.grid_forget()
+        self.back_arrow_button.grid_forget()
+        self.add_text_button.grid_forget()
+        self.add_logo_button.grid_forget()
+        self.remove_button.grid_forget()
+        self.next_arrow_button.grid_forget()
+        self.preview_watermarks_button.grid_forget()
+        self.back_to_thumbs_button.grid_forget()
+
+        self.select_files_button.grid(column=0, row=0, padx=2)
+        self.clear_files_button.grid(column=0, row=0, sticky=W, padx=5)
+        self.start_editing_button.grid(column=2, row=0, sticky=E, padx=5)
+
+        self.thumbnail_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.canvas_scrollbar.grid(column=1, row=0, sticky=(N, S))
+
+        self.image_manager.remove_watermark()
+        self.add_text_button.configure(state='normal')
+        self.add_logo_button.configure(state='normal')
+        self.remove_button.configure(state='disabled')
+        self.preview_watermarks_button.configure(state='disabled')
+
+        self.thumbnail_canvas.update_thumbnails()
+        self.thumbnail_canvas.set_preview_mode(self.preview_watermarked_image)

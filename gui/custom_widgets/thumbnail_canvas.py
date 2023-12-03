@@ -22,6 +22,16 @@ class ThumbnailCanvas(Canvas):
         # create a variable to hold the current focused thumbnail label when contextual menu accessed
         self.focused_label = None
 
+    def set_preview_mode(self, main_window_function):
+        self.thumbnail_menu.delete(0, 1)
+        for thumbnail_label in self.thumbnail_frame.winfo_children():
+            thumbnail_label.bind('<Button-1>', lambda event: self.preview_thumbnail(event, main_window_function))
+
+    def preview_thumbnail(self, event, main_window_function):
+        x, y = self.winfo_pointerx(), self.winfo_pointery()
+        self.focused_label = self.winfo_containing(x, y)
+        main_window_function(self.focused_label.label_id)
+
     def show_image_menu(self, event):
         # set the current focused label when accessing the contextual menu
         x, y = self.winfo_pointerx(), self.winfo_pointery()

@@ -111,7 +111,6 @@ class ImageManager:
         x = int(watermark.size[0] / 2)
         y = int(watermark.size[1] / 2)
         if outline:
-            # SHOULD I ADD AN OUTLINE SIZE OPTION?????
             outline_width = 1  # Change this to the desired outline width
             for i in range(-outline_width, outline_width + 1):
                 for j in range(-outline_width, outline_width + 1):
