@@ -83,6 +83,9 @@ class MainWindow:
         self.preview_watermarks_button.configure(state='disabled')
         self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
 
+        # preview image view widgets
+        self.remove_image_button = ttk.Button(self.button_frame, text='Remove Image', command=self.remove_image)
+
         self.thumbnail_view()
 
     def load_files(self):
@@ -126,8 +129,7 @@ class MainWindow:
         self.preview_view()
 
     def preview_watermarked_image(self, image_index):
-        # NOW SORT OUT THE EDITING VEIW FOR PREVIEW MODE!!
-        self.editing_view()
+        self.preview_image_view()
         self.editing_canvas.set_image_index(image_index)
 
     def thumbnail_view(self):
@@ -200,3 +202,25 @@ class MainWindow:
 
         self.thumbnail_canvas.update_thumbnails()
         self.thumbnail_canvas.set_preview_mode(self.preview_watermarked_image)
+
+    def preview_image_view(self):
+        self.select_files_button.grid_forget()
+        self.clear_files_button.grid_forget()
+        self.start_editing_button.grid_forget()
+        self.canvas_scrollbar.grid_forget()
+        self.thumbnail_canvas.grid_forget()
+        self.canvas_scrollbar.grid_forget()
+        self.thumbnail_canvas.grid_forget()
+
+        self.editing_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.back_arrow_button.grid(column=0, row=0, padx=2)
+        self.remove_image_button.grid(column=1, row=0, padx=2)
+        self.next_arrow_button.grid(column=2, row=0, padx=2)
+        self.preview_watermarks_button.grid(column=2, row=0, sticky=E, padx=5)
+        self.back_to_thumbs_button.grid(column=0, row=0, sticky=W, padx=5)
+
+        self.editing_canvas.show_current_image()
+
+    def remove_image(self):
+        self.image_manager.remove_image(self.editing_canvas.current_image_index)
+        self.editing_canvas.next_image_index()
