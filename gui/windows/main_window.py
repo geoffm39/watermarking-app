@@ -83,8 +83,13 @@ class MainWindow:
         self.preview_watermarks_button.configure(state='disabled')
         self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
 
+        # preview view widgets
+        self.save_images_button = ttk.Button(mainframe, text='Save Images', command=None)
+        self.back_to_edit_button = ttk.Button(mainframe, text='Back to Editing', command=self.editing_view)
+
         # preview image view widgets
         self.remove_image_button = ttk.Button(self.button_frame, text='Remove Image', command=self.remove_image)
+        self.back_to_preview_button = ttk.Button(mainframe, text='Back', command=self.preview_view)
 
         self.thumbnail_view()
 
@@ -165,6 +170,8 @@ class MainWindow:
         self.thumbnail_canvas.grid_forget()
         self.canvas_scrollbar.grid_forget()
         self.thumbnail_canvas.grid_forget()
+        self.back_to_edit_button.grid_forget()
+        self.save_images_button.grid_forget()
 
         self.editing_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.back_arrow_button.grid(column=0, row=0, padx=2)
@@ -186,10 +193,11 @@ class MainWindow:
         self.next_arrow_button.grid_forget()
         self.preview_watermarks_button.grid_forget()
         self.back_to_thumbs_button.grid_forget()
+        self.back_to_preview_button.grid_forget()
+        self.remove_image_button.grid_forget()
 
-        self.select_files_button.grid(column=0, row=0, padx=2)
-        self.clear_files_button.grid(column=0, row=0, sticky=W, padx=5)
-        self.start_editing_button.grid(column=2, row=0, sticky=E, padx=5)
+        self.back_to_edit_button.grid(column=0, row=0, sticky=W, padx=5)
+        self.save_images_button.grid(column=2, row=0, sticky=E, padx=5)
 
         self.thumbnail_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.canvas_scrollbar.grid(column=1, row=0, sticky=(N, S))
@@ -211,16 +219,18 @@ class MainWindow:
         self.thumbnail_canvas.grid_forget()
         self.canvas_scrollbar.grid_forget()
         self.thumbnail_canvas.grid_forget()
+        self.preview_watermarks_button.grid_forget()
+        self.back_to_edit_button.grid_forget()
 
         self.editing_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.back_arrow_button.grid(column=0, row=0, padx=2)
         self.remove_image_button.grid(column=1, row=0, padx=2)
         self.next_arrow_button.grid(column=2, row=0, padx=2)
-        self.preview_watermarks_button.grid(column=2, row=0, sticky=E, padx=5)
-        self.back_to_thumbs_button.grid(column=0, row=0, sticky=W, padx=5)
+        self.back_to_preview_button.grid(column=0, row=0, sticky=W, padx=5)
 
         self.editing_canvas.show_current_image()
 
     def remove_image(self):
         self.image_manager.remove_image(self.editing_canvas.current_image_index)
-        self.editing_canvas.next_image_index()
+        self.image_manager.set_current_image(0)
+        self.editing_canvas.show_current_image()
