@@ -17,14 +17,16 @@ class ThumbnailCanvas(Canvas):
         self.create_window(0, 0, anchor='nw', window=self.thumbnail_frame)
 
         self.thumbnail_menu = Menu(self.main_window.root, tearoff=0)
-        self.thumbnail_menu.add_command(label='Rotate Right 90°', command=self.rotate_image_right)
-        self.thumbnail_menu.add_command(label='Rotate Left 90°', command=self.rotate_image_left)
-        self.thumbnail_menu.add_command(label='Remove', command=self.remove_image)
         # create a variable to hold the current focused thumbnail label when contextual menu accessed
         self.focused_label = None
 
     def set_preview_mode(self, is_preview_mode):
         self.preview_mode = is_preview_mode
+        if not is_preview_mode:
+            self.thumbnail_menu.delete(0, 2)
+            self.thumbnail_menu.add_command(label='Rotate Right 90°', command=self.rotate_image_right)
+            self.thumbnail_menu.add_command(label='Rotate Left 90°', command=self.rotate_image_left)
+            self.thumbnail_menu.add_command(label='Remove', command=self.remove_image)
 
     def add_preview_bindings(self):
         self.thumbnail_menu.delete(0, 2)
