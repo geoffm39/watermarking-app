@@ -6,27 +6,33 @@ from image_manager import ImageManager
 
 
 class ThumbnailCanvas(Canvas):
-    def __init__(self, parent, root, image_manager: ImageManager, **kwargs):
+    def __init__(self, parent, main_window, image_manager: ImageManager, **kwargs):
         super().__init__(parent, **kwargs)
 
-        self.root = root
+        self.main_window = main_window
         self.image_manager = image_manager
+        self.preview_mode = False
 
         self.thumbnail_frame = ttk.Frame(self)
         self.create_window(0, 0, anchor='nw', window=self.thumbnail_frame)
 
-        self.thumbnail_menu = Menu(self.root, tearoff=0)
+        self.thumbnail_menu = Menu(self.main_window.root, tearoff=0)
         self.thumbnail_menu.add_command(label='Rotate Right 90°', command=self.rotate_image_right)
         self.thumbnail_menu.add_command(label='Rotate Left 90°', command=self.rotate_image_left)
         self.thumbnail_menu.add_command(label='Remove', command=self.remove_image)
         # create a variable to hold the current focused thumbnail label when contextual menu accessed
         self.focused_label = None
 
-    def set_preview_mode(self, main_window_function):
+    def set_preview_mode(self, is_preview_mode):
+        self.preview_mode = is_preview_mode
+
+    def add_preview_bindings(self):
         self.thumbnail_menu.delete(0, 2)
         self.thumbnail_menu.add_command(label='Remove', command=self.remove_image)
         for thumbnail_label in self.thumbnail_frame.winfo_children():
-            thumbnail_label.bind('<Button-1>', lambda event: self.preview_thumbnail(event, main_window_function))
+            thumbnail_label.bind('<Button-1>',
+                                 lambda event: self.preview_thumbnail(event,
+                                                                      self.main_window.preview_watermarked_image))
 
     def preview_thumbnail(self, event, main_window_function):
         x, y = self.winfo_pointerx(), self.winfo_pointery()
@@ -64,6 +70,9 @@ class ThumbnailCanvas(Canvas):
             thumbnail_label.grid(row=i // 5, column=i % 5, padx=5, pady=5)
             thumbnail_label.bind('<Button-3>', self.show_image_menu)
             thumbnail_label.label_id = i
+
+        if self.preview_mode:
+            self.add_preview_bindings()
 
         self.thumbnail_frame.update_idletasks()
         self.config(scrollregion=self.bbox('all'))

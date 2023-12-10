@@ -44,7 +44,7 @@ class MainWindow:
 
         # thumbnail view widgets
         self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame,
-                                                root=self.root,
+                                                main_window=self,
                                                 image_manager=self.image_manager,
                                                 width=1080,
                                                 height=654)
@@ -160,6 +160,7 @@ class MainWindow:
         self.remove_button.configure(state='disabled')
         self.preview_watermarks_button.configure(state='disabled')
 
+        self.thumbnail_canvas.set_preview_mode(False)
         self.thumbnail_canvas.update_thumbnails()
 
     def editing_view(self):
@@ -208,8 +209,8 @@ class MainWindow:
         self.remove_button.configure(state='disabled')
         self.preview_watermarks_button.configure(state='disabled')
 
+        self.thumbnail_canvas.set_preview_mode(True)
         self.thumbnail_canvas.update_thumbnails()
-        self.thumbnail_canvas.set_preview_mode(self.preview_watermarked_image)
 
     def preview_image_view(self):
         self.select_files_button.grid_forget()
