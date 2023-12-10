@@ -23,7 +23,8 @@ class ThumbnailCanvas(Canvas):
         self.focused_label = None
 
     def set_preview_mode(self, main_window_function):
-        self.thumbnail_menu.delete(0, 1)
+        self.thumbnail_menu.delete(0, 2)
+        self.thumbnail_menu.add_command(label='Remove', command=self.remove_image)
         for thumbnail_label in self.thumbnail_frame.winfo_children():
             thumbnail_label.bind('<Button-1>', lambda event: self.preview_thumbnail(event, main_window_function))
 
