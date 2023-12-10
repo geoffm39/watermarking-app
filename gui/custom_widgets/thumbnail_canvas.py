@@ -32,14 +32,12 @@ class ThumbnailCanvas(Canvas):
         self.thumbnail_menu.delete(0, 2)
         self.thumbnail_menu.add_command(label='Remove', command=self.remove_image)
         for thumbnail_label in self.thumbnail_frame.winfo_children():
-            thumbnail_label.bind('<Button-1>',
-                                 lambda event: self.preview_thumbnail(event,
-                                                                      self.main_window.preview_watermarked_image))
+            thumbnail_label.bind('<Button-1>', self.preview_thumbnail)
 
-    def preview_thumbnail(self, event, main_window_function):
+    def preview_thumbnail(self, event):
         x, y = self.winfo_pointerx(), self.winfo_pointery()
         self.focused_label = self.winfo_containing(x, y)
-        main_window_function(self.focused_label.label_id)
+        self.main_window.preview_watermarked_image(self.focused_label.label_id)
 
     def show_image_menu(self, event):
         # set the current focused label when accessing the contextual menu
