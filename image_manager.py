@@ -1,4 +1,5 @@
 from PIL import Image, ImageTk, ImageDraw, ImageFont
+import copy
 
 
 class ImageManager:
@@ -6,6 +7,8 @@ class ImageManager:
         # IMAGE LISTS
         self.images = []
         self.thumbnails = []
+        # list to hold original images without watermarks for reverting changes
+        self.original_images = []
 
         # IMAGE OBJECTS
         self.current_editing_image = None
@@ -166,6 +169,7 @@ class ImageManager:
         self.watermark_tile_spacing = spacing
 
     def apply_watermarks(self):
+        self.original_images = copy.deepcopy(self.images)
         watermark = self.get_watermark().copy()
         watermark_x, watermark_y = watermark.size
         for i, image in enumerate(self.images):
@@ -233,3 +237,13 @@ class ImageManager:
         rotated_thumb.thumbnail((200, 200))
         rotated_thumb = ImageTk.PhotoImage(rotated_thumb)
         self.thumbnails[index] = rotated_thumb
+
+    def cancel_image_changes(self):
+        self.images = copy.deepcopy(self.original_images)
+        self.thumbnails = []
+        for image in self.images:
+            thumb_img = image.copy()
+            thumb_img.thumbnail((200, 200))
+            thumb_img = ImageTk.PhotoImage(thumb_img)
+            self.thumbnails.append(thumb_img)
+

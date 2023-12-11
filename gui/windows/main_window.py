@@ -85,7 +85,7 @@ class MainWindow:
 
         # preview view widgets
         self.save_images_button = ttk.Button(mainframe, text='Save Images', command=None)
-        self.back_to_edit_button = ttk.Button(mainframe, text='Back to Editing', command=self.editing_view)
+        self.back_to_edit_button = ttk.Button(mainframe, text='Back to Editing', command=self.cancel_changes)
 
         # preview image view widgets
         self.remove_image_button = ttk.Button(self.button_frame, text='Remove Image', command=self.remove_image)
@@ -136,6 +136,10 @@ class MainWindow:
     def preview_watermarked_image(self, image_index):
         self.preview_image_view()
         self.editing_canvas.set_image_index(image_index)
+
+    def cancel_changes(self):
+        self.image_manager.cancel_image_changes()
+        self.editing_view()
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()

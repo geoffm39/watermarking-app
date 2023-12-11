@@ -17,7 +17,7 @@ class ThumbnailCanvas(Canvas):
         self.create_window(0, 0, anchor='nw', window=self.thumbnail_frame)
 
         self.thumbnail_menu = Menu(self.main_window.root, tearoff=0)
-        # create a variable to hold the current focused thumbnail label when contextual menu accessed
+        # variable to hold the current focused thumbnail label when contextual menu accessed
         self.focused_label = None
 
     def set_preview_mode(self, is_preview_mode):
