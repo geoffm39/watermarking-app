@@ -85,7 +85,7 @@ class MainWindow:
 
         # preview view widgets
         self.save_images_button = ttk.Button(mainframe, text='Save Images', command=None)
-        self.back_to_edit_button = ttk.Button(mainframe, text='Back to Editing', command=self.cancel_changes)
+        self.cancel_changes = ttk.Button(mainframe, text='Cancel Changes', command=self.cancel_changes)
 
         # preview image view widgets
         self.remove_image_button = ttk.Button(self.button_frame, text='Remove Image', command=self.remove_image)
@@ -175,7 +175,7 @@ class MainWindow:
         self.thumbnail_canvas.grid_forget()
         self.canvas_scrollbar.grid_forget()
         self.thumbnail_canvas.grid_forget()
-        self.back_to_edit_button.grid_forget()
+        self.cancel_changes.grid_forget()
         self.save_images_button.grid_forget()
 
         self.editing_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -201,7 +201,7 @@ class MainWindow:
         self.back_to_preview_button.grid_forget()
         self.remove_image_button.grid_forget()
 
-        self.back_to_edit_button.grid(column=0, row=0, sticky=W, padx=5)
+        self.cancel_changes.grid(column=0, row=0, sticky=W, padx=5)
         self.save_images_button.grid(column=2, row=0, sticky=E, padx=5)
 
         self.thumbnail_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -225,7 +225,7 @@ class MainWindow:
         self.canvas_scrollbar.grid_forget()
         self.thumbnail_canvas.grid_forget()
         self.preview_watermarks_button.grid_forget()
-        self.back_to_edit_button.grid_forget()
+        self.cancel_changes.grid_forget()
 
         self.editing_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.back_arrow_button.grid(column=0, row=0, padx=2)
