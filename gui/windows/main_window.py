@@ -97,8 +97,9 @@ class MainWindow:
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.image_manager.add_images(files)
         self.thumbnail_canvas.update_thumbnails()
-        self.start_editing_button.configure(state='normal')
-        self.clear_files_button.configure(state='normal')
+        if len(self.image_manager.get_thumbnails()) > 0:
+            self.start_editing_button.configure(state='normal')
+            self.clear_files_button.configure(state='normal')
 
     def clear_files(self):
         self.image_manager.remove_all_images()
