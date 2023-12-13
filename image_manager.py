@@ -217,6 +217,7 @@ class ImageManager:
             split_filename = self.file_names[index].split('.')
             file_name = ".".join(split_filename[:-1])
             file_type = split_filename[-1]
+            # add _wm to the end of the original file name to prevent overwriting original image
             file_path = f"{folder}/{file_name}_wm.{file_type}"
             image = image.convert('RGB')
             image.save(file_path)
