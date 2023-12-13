@@ -5,6 +5,7 @@ import copy
 class ImageManager:
     def __init__(self):
         # IMAGE LISTS
+        self.file_names = []
         self.images = []
         self.thumbnails = []
         # list to hold original images without watermarks for reverting changes
@@ -28,6 +29,8 @@ class ImageManager:
 
     def add_images(self, filepaths):
         for filepath in filepaths:
+            filename = filepath.split('/')[-1]
+            self.file_names.append(filename)
             with Image.open(filepath) as image:
                 self.images.append(image)
                 thumb_img = image.copy()
@@ -209,16 +212,27 @@ class ImageManager:
             thumb = ImageTk.PhotoImage(thumb)
             self.thumbnails[i] = thumb
 
+    def save_images(self, folder):
+        for index, image in enumerate(self.images):
+            split_filename = self.file_names[index].split('.')
+            file_name = ".".join(split_filename[:-1])
+            file_type = split_filename[-1]
+            file_path = f"{folder}/{file_name}_wm.{file_type}"
+            image = image.convert('RGB')
+            image.save(file_path)
+
     def remove_watermark(self):
         self.watermark = None
 
     def remove_all_images(self):
         self.images = []
         self.thumbnails = []
+        self.file_names = []
 
     def remove_image(self, index):
         self.images.pop(index)
         self.thumbnails.pop(index)
+        self.file_names.pop(index)
 
     def rotate_image_left(self, index):
         image = self.images[index]

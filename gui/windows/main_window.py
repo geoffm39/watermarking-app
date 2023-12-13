@@ -84,7 +84,7 @@ class MainWindow:
         self.back_to_thumbs_button = ttk.Button(mainframe, text='Back', command=self.thumbnail_view)
 
         # preview view widgets
-        self.save_images_button = ttk.Button(mainframe, text='Save Images', command=None)
+        self.save_images_button = ttk.Button(mainframe, text='Save Images', command=self.save_files)
         self.cancel_changes = ttk.Button(mainframe, text='Cancel Changes', command=self.cancel_changes)
 
         # preview image view widgets
@@ -106,6 +106,11 @@ class MainWindow:
         self.thumbnail_canvas.update_thumbnails()
         self.start_editing_button.configure(state='disabled')
         self.clear_files_button.configure(state='disabled')
+
+    def save_files(self):
+        folder = filedialog.askdirectory()
+        self.image_manager.save_images(folder)
+        self.root.destroy()
 
     def open_text_editor(self):
         self.text_editor_window = EditTextWindow(self.root,
