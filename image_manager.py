@@ -192,20 +192,22 @@ class ImageManager:
             new_height = int(watermark_y * ratio)
 
             # call resize, passing in the new width and height
-            watermark = watermark.resize((new_width, new_height))
+            resized_watermark = watermark.resize((new_width, new_height))
 
             if self.is_tiled:
                 self.set_tile_spacing(int(image.size[0] * self.watermark_spacing_ratio))
-                locations = self.set_tile_locations(image_x=image.size[0], image_y=image.size[1], watermark=watermark)
+                locations = self.set_tile_locations(image_x=image.size[0],
+                                                    image_y=image.size[1],
+                                                    watermark=resized_watermark)
                 for row in locations:
                     for location in row:
-                        image.alpha_composite(watermark, dest=(location[0], location[1]))
+                        image.alpha_composite(resized_watermark, dest=(location[0], location[1]))
 
             else:
-                image.alpha_composite(watermark, dest=(int(image.size[0] * self.watermark_x_ratio
-                                                           - watermark.size[0] / 2),
-                                                       int(image.size[1] * self.watermark_y_ratio
-                                                           - watermark.size[1] / 2)))
+                image.alpha_composite(resized_watermark, dest=(int(image.size[0] * self.watermark_x_ratio
+                                                                   - resized_watermark.size[0] / 2),
+                                                               int(image.size[1] * self.watermark_y_ratio
+                                                                   - resized_watermark.size[1] / 2)))
             self.images[i] = image
             thumb = image.copy()
             thumb.thumbnail((200, 200))
