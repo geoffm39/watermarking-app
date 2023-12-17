@@ -55,7 +55,7 @@ class MainWindow:
         self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
         self.clear_files_button = ttk.Button(mainframe, text='Clear Files', command=self.clear_files)
         self.clear_files_button.configure(state='disabled')
-        self.start_editing_button = ttk.Button(mainframe, text='Start Editing', command=self.editing_view)
+        self.start_editing_button = ttk.Button(mainframe, text='Start Editing', command=self.start_editing)
         self.start_editing_button.configure(state='disabled')
 
         # editing view widgets
@@ -140,11 +140,16 @@ class MainWindow:
         self.preview_view()
 
     def preview_watermarked_image(self, image_index):
-        self.preview_image_view()
         self.editing_canvas.set_image_index(image_index)
+        self.preview_image_view()
 
     def cancel_changes(self):
         self.image_manager.cancel_image_changes()
+        self.editing_view()
+
+    def start_editing(self):
+        self.editing_canvas.current_image_index = 0
+        self.image_manager.set_current_image(self.editing_canvas.current_image_index)
         self.editing_view()
 
     def thumbnail_view(self):
@@ -214,6 +219,9 @@ class MainWindow:
         self.canvas_scrollbar.grid(column=1, row=0, sticky=(N, S))
 
         self.image_manager.remove_watermark()
+        self.remove_image_button.configure(state='normal')
+        self.back_arrow_button.configure(state='normal')
+        self.next_arrow_button.configure(state='normal')
         self.add_text_button.configure(state='normal')
         self.add_logo_button.configure(state='normal')
         self.remove_button.configure(state='disabled')
@@ -243,5 +251,11 @@ class MainWindow:
 
     def remove_image(self):
         self.image_manager.remove_image(self.editing_canvas.current_image_index)
-        self.image_manager.set_current_image(0)
-        self.editing_canvas.show_current_image()
+        if len(self.image_manager.get_thumbnails()) > 0:
+            self.image_manager.set_current_image(0)
+            self.editing_canvas.show_current_image()
+        else:
+            self.editing_canvas.delete('all')
+            self.remove_image_button.configure(state='disabled')
+            self.back_arrow_button.configure(state='disabled')
+            self.next_arrow_button.configure(state='disabled')

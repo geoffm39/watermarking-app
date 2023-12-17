@@ -263,4 +263,5 @@ class ImageManager:
             thumb_img.thumbnail((200, 200))
             thumb_img = ImageTk.PhotoImage(thumb_img)
             self.thumbnails.append(thumb_img)
+        self.set_current_image(0)
 
