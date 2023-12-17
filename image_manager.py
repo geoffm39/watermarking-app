@@ -8,8 +8,9 @@ class ImageManager:
         self.file_names = []
         self.images = []
         self.thumbnails = []
-        # list to hold original images without watermarks for reverting changes
+        # lists to hold original images without watermarks for reverting changes
         self.original_images = []
+        self.original_file_names = []
 
         # IMAGE OBJECTS
         self.current_editing_image = None
@@ -173,6 +174,7 @@ class ImageManager:
 
     def apply_watermarks(self):
         self.original_images = copy.deepcopy(self.images)
+        self.original_file_names = copy.deepcopy(self.file_names)
         watermark = self.get_watermark().copy()
         watermark_x, watermark_y = watermark.size
         for i, image in enumerate(self.images):
@@ -257,6 +259,7 @@ class ImageManager:
 
     def cancel_image_changes(self):
         self.images = copy.deepcopy(self.original_images)
+        self.file_names = copy.deepcopy(self.original_file_names)
         self.thumbnails = []
         for image in self.images:
             thumb_img = image.copy()
