@@ -45,6 +45,9 @@ class ImageManager:
     def get_image_count(self):
         return len(self.images)
 
+    def get_thumbnail_count(self):
+        return len(self.thumbnails)
+
     def get_current_photo_image(self):
         return self.current_editing_photo_image
 

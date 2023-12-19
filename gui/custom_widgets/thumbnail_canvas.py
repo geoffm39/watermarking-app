@@ -60,7 +60,7 @@ class ThumbnailCanvas(Canvas):
         self.image_manager.remove_image(self.focused_label.label_id)
         self.update_thumbnails()
         self.focused_label = None
-        if len(self.image_manager.get_thumbnails()) == 0:
+        if self.image_manager.get_thumbnail_count() == 0:
             self.main_window.start_editing_button.configure(state='disabled')
             self.main_window.clear_files_button.configure(state='disabled')
             self.main_window.save_images_button.configure(state='disabled')

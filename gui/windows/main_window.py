@@ -251,8 +251,8 @@ class MainWindow:
 
     def remove_image(self):
         self.image_manager.remove_image(self.editing_canvas.current_image_index)
-        if len(self.image_manager.get_thumbnails()) > 0:
-            self.image_manager.set_current_image(0)
+        if self.image_manager.get_thumbnail_count() > 0:
+            self.editing_canvas.set_image_index(0)
             self.editing_canvas.show_current_image()
         else:
             self.editing_canvas.delete('all')
