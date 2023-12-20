@@ -42,6 +42,19 @@ class MainWindow:
         self.button_frame = ttk.Frame(mainframe)
         self.button_frame.grid(column=1, row=0, pady=5, sticky=(W, E))
 
+        # info view widgets
+        self.info_canvas = Canvas(self.canvas_frame,
+                                  width=1080,
+                                  height=720)
+        with Image.open('gui/images/app_background.jpg') as img:
+            img.thumbnail((1080, 720))
+            self.background_image = ImageTk.PhotoImage(img)
+        self.info_canvas.create_image(540, 360, image=self.background_image)
+        self.info_canvas.create_rectangle((125, 125, 955, 595),
+                                          fill='white',
+                                          width=0)
+        self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
+
         # thumbnail view widgets
         self.thumbnail_canvas = ThumbnailCanvas(self.canvas_frame,
                                                 main_window=self,
@@ -52,7 +65,6 @@ class MainWindow:
                                               orient='vertical',
                                               command=self.thumbnail_canvas.yview)
         self.thumbnail_canvas.configure(yscrollcommand=self.canvas_scrollbar.set)
-        self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
         self.clear_files_button = ttk.Button(mainframe, text='Clear Files', command=self.clear_files)
         self.clear_files_button.configure(state='disabled')
         self.start_editing_button = ttk.Button(mainframe, text='Start Editing', command=self.start_editing)
@@ -91,13 +103,15 @@ class MainWindow:
         self.remove_image_button = ttk.Button(self.button_frame, text='Remove Image', command=self.remove_image)
         self.back_to_preview_button = ttk.Button(mainframe, text='Back', command=self.preview_view)
 
-        self.thumbnail_view()
+        # self.thumbnail_view()
+        self.info_view()
 
     def load_files(self):
         files = filedialog.askopenfilenames(filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.bmp")])
         self.image_manager.add_images(files)
-        self.thumbnail_canvas.update_thumbnails()
-        if len(self.image_manager.get_thumbnails()) > 0:
+        if self.image_manager.get_thumbnail_count() > 0:
+            self.thumbnail_view()
+            self.thumbnail_canvas.update_thumbnails()
             self.start_editing_button.configure(state='normal')
             self.clear_files_button.configure(state='normal')
 
@@ -151,6 +165,10 @@ class MainWindow:
         self.editing_canvas.current_image_index = 0
         self.image_manager.set_current_image(self.editing_canvas.current_image_index)
         self.editing_view()
+
+    def info_view(self):
+        self.select_files_button.grid(column=0, row=0, padx=2)
+        self.info_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()
