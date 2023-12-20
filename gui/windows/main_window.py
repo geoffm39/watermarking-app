@@ -49,10 +49,6 @@ class MainWindow:
         with Image.open('gui/images/app_background.jpg') as img:
             img.thumbnail((1080, 720))
             self.background_image = ImageTk.PhotoImage(img)
-        self.info_canvas.create_image(540, 360, image=self.background_image)
-        self.info_canvas.create_rectangle((125, 125, 955, 595),
-                                          fill='white',
-                                          width=0)
         self.select_files_button = ttk.Button(self.button_frame, text='Select Files', command=self.load_files)
 
         # thumbnail view widgets
@@ -120,6 +116,7 @@ class MainWindow:
         self.thumbnail_canvas.update_thumbnails()
         self.start_editing_button.configure(state='disabled')
         self.clear_files_button.configure(state='disabled')
+        self.info_view()
 
     def save_files(self):
         folder = filedialog.askdirectory()
@@ -167,8 +164,22 @@ class MainWindow:
         self.editing_view()
 
     def info_view(self):
+        self.thumbnail_canvas.grid_forget()
+        self.canvas_scrollbar.grid_forget()
+        self.start_editing_button.grid_forget()
+        self.clear_files_button.grid_forget()
+
         self.select_files_button.grid(column=0, row=0, padx=2)
         self.info_canvas.grid(column=0, row=0, sticky=(N, W, E, S))
+
+        self.info_canvas.create_image(540, 360, image=self.background_image)
+        info_box = self.info_canvas.create_rectangle((125, 125, 955, 595),
+                                                     fill='white',
+                                                     width=0)
+        self.info_canvas.itemconfig(info_box, stipple='gray50')
+        self.info_canvas.create_text((350, 150),
+                                     text='Step 1: Select files to apply watermark to',
+                                     font=('Helvetica', '12', 'bold'))
 
     def thumbnail_view(self):
         self.editing_canvas.grid_forget()
