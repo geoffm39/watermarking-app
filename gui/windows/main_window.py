@@ -177,8 +177,16 @@ class MainWindow:
                                                      fill='white',
                                                      width=0)
         self.info_canvas.itemconfig(info_box, stipple='gray50')
-        self.info_canvas.create_text((350, 150),
-                                     text='Step 1: Select files to apply watermark to',
+        self.info_canvas.create_text((535, 360),
+                                     text="Application for batch automatic watermarking of images\n\n\n"
+                                          "Step 1: Select files to apply watermark to.\n\n"
+                                          "Step 2: Right click on a thumbnail to remove or rotate the image.\n\n"
+                                          "Step 3: Select 'Start Editing' and choose an image using the arrows to apply a watermark to.\n\n"
+                                          "Step 4: Choose between a text or image watermark.\n\n"
+                                          "Step 5: Edit the watermark using the editor window then select apply to complete.\n\n"
+                                          "Step 6: Select 'Preview Watermarks' to view watermarked image thumbnails.\n\n"
+                                          "Step 7: Left click a thumbnail to view enlarged image, or right click to remove.\n\n"
+                                          "Step 8: When changes are complete select 'Save Images' to save watermarked images to chosen folder.",
                                      font=('Helvetica', '12', 'bold'))
 
     def thumbnail_view(self):
