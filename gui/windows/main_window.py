@@ -14,6 +14,7 @@ class MainWindow:
     def __init__(self, root: Tk):
         self.root = root
         self.root.title('Watermark App')
+        self.root.iconbitmap('gui/images/watermark_icon.ico')
         self.root.option_add('*tearOFF', FALSE)
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
@@ -186,7 +187,8 @@ class MainWindow:
                                           "Step 5: Edit the watermark using the editor window then select apply to complete.\n\n"
                                           "Step 6: Select 'Preview Watermarks' to view watermarked image thumbnails.\n\n"
                                           "Step 7: Left click a thumbnail to view enlarged image, or right click to remove.\n\n"
-                                          "Step 8: When changes are complete select 'Save Images' to save watermarked images to chosen folder.",
+                                          "Step 8: When changes are complete select 'Save Images' to save watermarked images to chosen folder.\n\n\n"
+                                          "For any further questions, bug reports or feedback, email me at geoffm39@gmail.com.  Thanks!",
                                      font=('Helvetica', '12', 'bold'))
 
     def thumbnail_view(self):
