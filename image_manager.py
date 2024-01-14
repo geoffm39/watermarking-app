@@ -226,7 +226,7 @@ class ImageManager:
             file_type = split_filename[-1]
             # add _wm to the end of the original file name to prevent overwriting original image
             file_path = f"{folder}/{file_name}_wm.{file_type}"
-            image = image.convert('RGB')
+            image = image.convert(self.original_images[index].mode)
             image.save(file_path)
 
     def remove_watermark(self):
