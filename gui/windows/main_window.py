@@ -184,7 +184,7 @@ class MainWindow:
                                           "Step 2: Right click on a thumbnail to remove or rotate the image.\n\n"
                                           "Step 3: Select 'Start Editing' and choose an image using the arrows to apply a watermark to.\n\n"
                                           "Step 4: Choose between a text or image watermark.\n\n"
-                                          "Step 5: Edit the watermark using the editor window then select apply to complete.\n\n"
+                                          "Step 5: Edit the watermark and drag and drop to move, then select apply to complete.\n\n"
                                           "Step 6: Select 'Preview Watermarks' to view watermarked image thumbnails.\n\n"
                                           "Step 7: Left click a thumbnail to view enlarged image, or right click to remove.\n\n"
                                           "Step 8: When changes are complete select 'Save Images' to save watermarked images to chosen folder.\n\n\n"
