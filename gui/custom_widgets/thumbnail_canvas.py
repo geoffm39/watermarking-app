@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-from PIL import Image, ImageTk
 
 from image_manager import ImageManager
 
@@ -17,7 +16,6 @@ class ThumbnailCanvas(Canvas):
         self.create_window(0, 0, anchor='nw', window=self.thumbnail_frame)
 
         self.thumbnail_menu = Menu(self.main_window.root, tearoff=0)
-        # variable to hold the current focused thumbnail label when contextual menu accessed
         self.focused_label = None
 
     def set_preview_mode(self, is_preview_mode):
@@ -40,7 +38,6 @@ class ThumbnailCanvas(Canvas):
         self.main_window.preview_watermarked_image(self.focused_label.label_id)
 
     def show_image_menu(self, event):
-        # set the current focused label when accessing the contextual menu
         x, y = self.winfo_pointerx(), self.winfo_pointery()
         self.focused_label = self.winfo_containing(x, y)
 

@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import ttk
-from PIL import Image, ImageTk
 
 from image_manager import ImageManager
 

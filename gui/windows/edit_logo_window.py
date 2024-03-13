@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import colorchooser
-from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 from gui.custom_widgets.editing_canvas import EditingCanvas
 from image_manager import ImageManager
